@@ -1,0 +1,10 @@
+"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var router = express_1.Router();
+router.get("/getAllUsers", function (req, res) {
+    res.status(200).json({
+        message: "Get all users"
+    });
+});
+exports["default"] = router;
