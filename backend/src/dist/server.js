@@ -38,25 +38,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var express_1 = require("express");
 var dotenv_1 = require("dotenv");
-var mongoose_1 = require("mongoose");
-var user_1 = require("./models/user");
+// import UserModel from "./models/user";
+var models_1 = require("./models");
 var routes_1 = require("./routes");
+var database_1 = require("./config/database");
 dotenv_1["default"].config();
 var app = express_1["default"]();
 var port = process.env.PORT || 3000;
 app.use(express_1["default"].json());
-mongoose_1["default"]
-    .connect("mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@cluster0.iq4sxz5.mongodb.net/NextSkillDB")
-    .then(function () { return console.log("Connected to MongoDB"); })["catch"](function (err) { return console.log("MongoDB connection error:", err); });
+database_1["default"]();
 app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var response, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, user_1["default"].find()];
+                return [4 /*yield*/, models_1.UserModel.find()
+                        .populate({
+                        path: "role",
+                        select: "-_id"
+                    })
+                        .select("-password -_id -__v ")];
             case 1:
                 response = _a.sent();
+                // await UserModel.create({
+                //   name: "Nguyen Van A",
+                //   email: "a@example.com",
+                //   role: "681f6d51a266955d8682a70e",
+                //   password: "123456",
+                //   age: 25,
+                // });
+                response.map(function (item) { return console.log(item.email); });
                 res.status(200).json(response);
                 return [3 /*break*/, 3];
             case 2:

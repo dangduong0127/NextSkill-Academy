@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getAllUsers = void 0;
+exports.createUser = exports.getAllUsers = void 0;
 var user_services_1 = require("../services/user.services");
 var getAllUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var response, err_1;
@@ -58,3 +58,22 @@ var getAllUsers = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getAllUsers = getAllUsers;
+var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, user_services_1.handleCreateUser(req.body)];
+            case 1:
+                response = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                console.log(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.createUser = createUser;

@@ -1,15 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
-
-// Định nghĩa interface cho document
-export interface IUser extends Document {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  age: number;
-  avatar: string;
-  phoneNumber: number;
-}
+import mongoose, { Document, model, Types, Schema } from "mongoose";
+import { IUser } from "../interfaces";
 
 // Tạo schema cho model
 const UserSchema = new Schema<IUser>(
@@ -18,7 +8,7 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true },
     age: { type: Number, required: true },
     password: { type: String, required: true },
-    role: { type: String, required: true },
+    role: { type: Schema.Types.ObjectId, ref: "Role", required: true },
     avatar: { type: String, required: false },
     phoneNumber: { type: Number, required: false },
   },

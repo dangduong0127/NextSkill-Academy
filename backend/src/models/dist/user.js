@@ -7,7 +7,7 @@ var UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     age: { type: Number, required: true },
     password: { type: String, required: true },
-    role: { type: String, required: true },
+    role: { type: mongoose_1.Schema.Types.ObjectId, ref: "Role", required: true },
     avatar: { type: String, required: false },
     phoneNumber: { type: Number, required: false }
 }, { collection: "users" });

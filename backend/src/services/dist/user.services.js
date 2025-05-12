@@ -36,15 +36,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleGetAllUser = void 0;
-var user_1 = require("../models/user");
+exports.handleCreateUser = exports.handleGetAllUser = void 0;
+var models_1 = require("../models");
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, user_1["default"].find()];
+                return [4 /*yield*/, models_1.UserModel.find()
+                        .populate({ path: "role", select: "-_id" })
+                        .select("-password -__v")];
             case 1:
                 users = _a.sent();
                 return [2 /*return*/, users];
@@ -57,3 +59,30 @@ var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.handleGetAllUser = handleGetAllUser;
+var handleCreateUser = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.UserModel.create({
+                        name: data.name,
+                        email: data.email,
+                        password: data.password,
+                        role: data.role,
+                        age: data.age,
+                        avatar: data.avatar,
+                        phoneNumber: data.phoneNumber
+                    })];
+            case 1:
+                user = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                console.log(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleCreateUser = handleCreateUser;

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { handleGetAllUser } from "../services/user.services";
+import { handleGetAllUser, handleCreateUser } from "../services/user.services";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -10,4 +10,12 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllUsers };
+const createUser = async (req: Request, res: Response) => {
+  try {
+    const response = await handleCreateUser(req.body);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getAllUsers, createUser };
