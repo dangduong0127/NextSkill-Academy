@@ -1,5 +1,9 @@
-import { Request, Response } from "express";
-import { handleGetAllUser, handleCreateUser } from "../services/user.services";
+import { Request, Response, NextFunction } from "express";
+import {
+  handleGetAllUser,
+  handleCreateUser,
+  handleLogin,
+} from "../services/user.services";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -10,13 +14,23 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const response = await handleCreateUser(req.body);
     return res.status(Number(response.status)).json(response);
   } catch (err) {
     console.log(err);
+    next(err);
   }
 };
 
-export { getAllUsers, createUser };
+const loginController = async (req: Request, res: Response) => {
+  try {
+    const response = await handleLogin(req.body);
+    return res.status(Number(response.status)).json(response);
+  } catch (err) {
+    console.log("Error", err);
+  }
+};
+
+export { getAllUsers, createUser, loginController };
