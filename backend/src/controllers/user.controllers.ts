@@ -13,6 +13,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const createUser = async (req: Request, res: Response) => {
   try {
     const response = await handleCreateUser(req.body);
+    return res.status(Number(response.status)).json(response);
   } catch (err) {
     console.log(err);
   }
