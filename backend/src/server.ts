@@ -24,14 +24,7 @@ app.get("/", async (req, res) => {
         select: "-_id",
       })
       .select("-password -_id -__v ");
-    // await UserModel.create({
-    //   name: "Nguyen Van A",
-    //   email: "a@example.com",
-    //   role: "681f6d51a266955d8682a70e",
-    //   password: "123456",
-    //   age: 25,
-    // });
-    response.map((item) => console.log(item.email));
+
     res.status(200).json(response);
   } catch (err) {
     console.log(err);

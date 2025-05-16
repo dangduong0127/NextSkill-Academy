@@ -46,6 +46,9 @@ dotenv_1["default"].config();
 var app = express_1["default"]();
 var port = process.env.PORT || 3000;
 app.use(express_1["default"].json());
+app.use(express_1["default"].urlencoded({
+    extended: true
+}));
 database_1["default"]();
 app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var response, err_1;
@@ -61,14 +64,6 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
                         .select("-password -_id -__v ")];
             case 1:
                 response = _a.sent();
-                // await UserModel.create({
-                //   name: "Nguyen Van A",
-                //   email: "a@example.com",
-                //   role: "681f6d51a266955d8682a70e",
-                //   password: "123456",
-                //   age: 25,
-                // });
-                response.map(function (item) { return console.log(item.email); });
                 res.status(200).json(response);
                 return [3 /*break*/, 3];
             case 2:
