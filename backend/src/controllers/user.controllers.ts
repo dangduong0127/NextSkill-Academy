@@ -5,31 +5,33 @@ import {
   handleLogin,
 } from "../services/user.services";
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const response = await handleGetAllUser();
     res.status(200).json(response);
   } catch (err) {
     console.log(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
+const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const response = await handleCreateUser(req.body);
-    return res.status(Number(response.status)).json(response);
+    res.status(Number(response.status)).json(response);
   } catch (err) {
     console.log(err);
-    next(err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const loginController = async (req: Request, res: Response) => {
+const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
     const response = await handleLogin(req.body);
-    return res.status(Number(response.status)).json(response);
+    res.status(Number(response.status)).json(response);
   } catch (err) {
     console.log("Error", err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
