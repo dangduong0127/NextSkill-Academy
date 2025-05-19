@@ -1,35 +1,74 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.js
+import { useState, useMemo } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline, Button, Box } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import HomePage from "./components/HomePage";
+import Layout from "./components/Layout";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [mode, setMode] = useState<"light" | "dark">("light");
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: mode === "light" ? "#1976d2" : "#90caf9",
+          },
+        },
+      }),
+    [mode]
+  );
+
+  const toggleTheme = () => {
+    setMode((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <CssBaseline />
+        <Box
+          sx={{ p: 2 }}
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+          }}
+        >
+          <Button
+            style={{ borderRadius: "50%", padding: "20px" }}
+            variant="contained"
+            onClick={toggleTheme}
+          >
+            {mode === "light" ? (
+              <>
+                <DarkModeIcon />
+              </>
+            ) : (
+              <LightModeIcon />
+            )}
+          </Button>
+        </Box>
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <HomePage />
+              </Layout>
+            }
+          />
+          <Route path="/register" element={"<h1>tesst</h1>"} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
