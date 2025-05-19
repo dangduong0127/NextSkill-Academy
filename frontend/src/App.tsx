@@ -5,7 +5,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, Button, Box } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import HomePage from "./components/HomePage";
+import HomePage from "./Pages/HomePage";
+import LoginPage from "./Pages/Login";
+import RegisterPage from "./Pages/Register";
 import Layout from "./components/Layout";
 
 function App() {
@@ -64,6 +66,25 @@ function App() {
               </Layout>
             }
           />
+
+          <Route
+            path="/login"
+            element={
+              <Layout>
+                <LoginPage />
+              </Layout>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <Layout>
+                <RegisterPage />
+              </Layout>
+            }
+          ></Route>
+
           <Route path="/register" element={"<h1>tesst</h1>"} />
         </Routes>
       </BrowserRouter>

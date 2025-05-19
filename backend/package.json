@@ -13,10 +13,6 @@
   "description": "",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-<<<<<<< HEAD
-=======
-    "@types/cors": "^2.8.18",
->>>>>>> 3db450b (update frontend)
     "@types/express": "^5.0.1",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.15.17",

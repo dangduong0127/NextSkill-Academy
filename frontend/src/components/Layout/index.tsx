@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import "./styles.scss";
 
 type Props = {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Header />
-      {children}
+      <div className="main">{children}</div>
       <Footer />
     </>
   );

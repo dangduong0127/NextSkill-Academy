@@ -1,58 +1,203 @@
-import { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./styles.scss";
-import { Container } from "@mui/material";
+import {
+  Container,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Box,
+  Button,
+  Avatar,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+// Thêm import thiếu
+// import MenuIcon from "@mui/icons-material/Menu";
 
 const Header = () => {
-  useEffect(() => {
-    const fetchApi = async () => {
-      const response = await fetch(
-        "https://duhocinec.com/wp-json/wp/v2/country"
-      );
-      const data = await response.json();
-      console.log(data);
-    };
-    fetchApi();
-  }, []);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorActions, setAnchorActions] = useState<HTMLElement | null>(null);
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenActions = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorActions(event.currentTarget);
+  };
+
+  const handleCloseActions = () => {
+    setAnchorActions(null);
+  };
 
   return (
     <>
-      <header>
+      <AppBar position="fixed" color="inherit">
         <Container>
-          <div className="branch">
-            <img
-              src="http://localhost:3003/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg"
-              alt="branch"
-              className="logo"
-            />
-          </div>
-          <nav>
-            <a href="" className="nav-item">
-              Home
-            </a>
-            <a href="" className="nav-item">
-              About
-            </a>
-            <a href="" className="nav-item">
-              Members
-            </a>
-            <a href="" className="nav-item">
-              Events
-            </a>
-            <a href="" className="nav-item">
-              Blogs
-            </a>
-            <a href="" className="nav-item">
-              Contact
-            </a>
-          </nav>
+          <Toolbar
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "10px 0",
+            }}
+          >
+            {/* Logo */}
+            <Box component={Link} to={"/"} sx={{ width: "100px" }}>
+              <img
+                style={{
+                  width: "100%",
+                  height: "80px",
+                  objectFit: "contain",
+                }}
+                src="http://localhost:3003/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg"
+                alt="Logo"
+              />
+            </Box>
 
-          <div className="actions">
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </div>
+            {/* Menu Navigation */}
+            <Box
+              sx={{ display: "flex", gap: "10px" }}
+              onMouseLeave={handleClose}
+            >
+              <Button component={Link} to={"/"} color="inherit">
+                Home
+              </Button>
+              <Button component={Link} to={"/about"} color="inherit">
+                About
+              </Button>
+              <Button
+                color="inherit"
+                aria-controls={anchorEl ? "member-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={anchorEl ? "true" : undefined}
+                onMouseEnter={handleOpen}
+              >
+                Member
+              </Button>
+              <Menu
+                id="member-menu"
+                anchorEl={anchorEl}
+                open={!!anchorEl}
+                onClose={handleClose}
+                MenuListProps={{
+                  onMouseEnter: () =>
+                    clearTimeout(
+                      hoverTimeout.current as ReturnType<typeof setTimeout>
+                    ),
+                  onMouseLeave: handleClose,
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                // Thêm để cải thiện UX
+                disableScrollLock={true}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      marginTop: "5px",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    },
+                  },
+                }}
+              >
+                <MenuItem
+                  onClick={handleClose}
+                  component={Link}
+                  to="/web-development"
+                >
+                  Web Development
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  component={Link}
+                  to="/mobile-apps"
+                >
+                  Mobile Apps
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  component={Link}
+                  to="/ui-ux-design"
+                >
+                  UI/UX Design
+                </MenuItem>
+              </Menu>
+
+              <Button component={Link} to={"/events"} color="inherit">
+                Events
+              </Button>
+              <Button component={Link} to={"/blogs"} color="inherit">
+                Blogs
+              </Button>
+              <Button component={Link} to={"/contact"} color="inherit">
+                Contact
+              </Button>
+            </Box>
+
+            {/* User Actions */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <IconButton
+                color="inherit"
+                onClick={handleOpenActions}
+                aria-controls={anchorActions ? "user-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={anchorActions ? "true" : undefined}
+              >
+                <Avatar alt="User" src="/avatar.png" />
+              </IconButton>
+
+              <Menu
+                id="user-menu"
+                anchorEl={anchorActions}
+                open={!!anchorActions}
+                onClose={handleCloseActions}
+                disableScrollLock={true}
+              >
+                <MenuItem
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    padding: "8px 16px",
+                  }}
+                >
+                  <Button
+                    component={Link}
+                    to="/login"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={handleCloseActions}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    component={Link}
+                    to="/register"
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    onClick={handleCloseActions}
+                  >
+                    Register
+                  </Button>
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
         </Container>
-      </header>
+      </AppBar>
     </>
   );
 };
