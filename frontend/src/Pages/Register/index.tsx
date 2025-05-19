@@ -8,6 +8,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Button,
 } from "@mui/material";
 import "./styles.scss";
 const RegisterPage = () => {
@@ -15,6 +16,9 @@ const RegisterPage = () => {
     email: "",
     phone: "",
     gender: "",
+    password: "",
+    dateOfBirth: "",
+    repeat_password: "",
   });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -39,59 +43,91 @@ const RegisterPage = () => {
 
   return (
     <>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "500px",
-          backgroundColor: "#ccc",
-          padding: "20px",
-          borderRadius: "7px",
-        }}
-      >
-        <Typography variant="h6" align="center">
-          Đăng ký
-        </Typography>
+      <Box className="form-wrapper">
+        <Box
+          className="form-content"
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ bgcolor: "primary.light" }}
+        >
+          <Typography variant="h4" align="center" fontWeight={600}>
+            Đăng ký
+          </Typography>
 
-        <TextField
-          type="text"
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+          <TextField
+            type="text"
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-        <TextField
-          type="tel"
-          label="Số điện thoại"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
+          <TextField
+            type="tel"
+            label="Số điện thoại"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+          />
 
-        <FormControl>
-          <FormLabel id="demo-radio-buttons-group-label">Giới tính</FormLabel>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue={formData.gender || "female"}
-            name="gender"
-            onChange={handleChangeRadio}
-          >
-            <FormControlLabel value={"female"} control={<Radio />} label="Nữ" />
-            <FormControlLabel value={"male"} control={<Radio />} label="Nam" />
-            <FormControlLabel
-              value={"other"}
-              control={<Radio />}
-              label="Khác"
-            />
-          </RadioGroup>
+          <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Giới tính</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue={formData.gender || "female"}
+              name="gender"
+              onChange={handleChangeRadio}
+            >
+              <FormControlLabel
+                value={"female"}
+                control={<Radio />}
+                label="Nữ"
+              />
+              <FormControlLabel
+                value={"male"}
+                control={<Radio />}
+                label="Nam"
+              />
+              <FormControlLabel
+                value={"other"}
+                control={<Radio />}
+                label="Khác"
+              />
+            </RadioGroup>
+          </FormControl>
 
-          <TextField type="submit" value={"Submit"} />
-        </FormControl>
+          <TextField
+            type="date"
+            name="dateOfBirth"
+            label="Ngày sinh"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+
+          <TextField
+            type="password"
+            name="password"
+            label="Nhập mật khẩu"
+            value={formData.password}
+            onChange={handleChange}
+          />
+
+          <TextField
+            type="password"
+            name="repeat_password"
+            label="Nhập lại mật khẩu"
+            value={formData.repeat_password}
+            onChange={handleChange}
+          />
+
+          <Button type="submit" variant="contained" sx={{ marginTop: "10px" }}>
+            Đăng ký
+          </Button>
+        </Box>
       </Box>
     </>
   );

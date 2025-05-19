@@ -9,6 +9,8 @@ import HomePage from "./Pages/HomePage";
 import LoginPage from "./Pages/Login";
 import RegisterPage from "./Pages/Register";
 import Layout from "./components/Layout";
+import ErrorPage from "./Pages/ErrorPage";
+import "./global.scss";
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -16,10 +18,15 @@ function App() {
   const theme = useMemo(
     () =>
       createTheme({
+        typography: {
+          fontFamily: '"Monserrat", san-serif',
+        },
         palette: {
           mode,
           primary: {
             main: mode === "light" ? "#1976d2" : "#90caf9",
+            light: "#fff",
+            // dark: "#90caf9",
           },
         },
       }),
@@ -85,7 +92,14 @@ function App() {
             }
           ></Route>
 
-          <Route path="/register" element={"<h1>tesst</h1>"} />
+          <Route
+            path="/*"
+            element={
+              <Layout>
+                <ErrorPage />
+              </Layout>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
