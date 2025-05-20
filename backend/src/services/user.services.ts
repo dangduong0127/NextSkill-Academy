@@ -17,14 +17,13 @@ const handleGetAllUser = async () => {
 const handleCreateUser = async (data: IUser) => {
   try {
     const validate = () => {
-      if (!data.name) throw { status: 201, message: "Name is required" };
+      if (!data.phone)
+        throw { status: 201, message: "Phone number is required" };
 
       if (!data.email) throw { status: 201, message: "Email is required" };
 
       if (!data.password)
         throw { status: 201, message: "Password is required" };
-
-      if (!data.role) throw { status: 201, message: "Role is required" };
     };
     validate();
 
@@ -32,13 +31,13 @@ const handleCreateUser = async (data: IUser) => {
     const hashedPassword = await bcrypt.hash(data.password, saltRounds);
 
     const user = await UserModel.create({
-      name: data.name,
+      name: data.name ?? "",
       email: data.email,
       password: hashedPassword,
-      role: data.role,
+      role: "681f6d5fa266955d8682a70f",
       age: data.age ?? "",
       avatar: data.avatar ?? "",
-      phoneNumber: data.phoneNumber ?? "",
+      phone: data.phone ?? "",
     });
     if (user) {
       return {
@@ -47,14 +46,14 @@ const handleCreateUser = async (data: IUser) => {
       };
     } else {
       return {
-        status: 400,
+        status: 201,
         message: "User created false",
       };
     }
   } catch (err: any) {
     if (err.code === 11000 && err.keyPattern?.email) {
       return {
-        status: 400,
+        status: 201,
         message: "Email already exists",
       };
     }
@@ -80,13 +79,13 @@ const handleLogin = async (data: IUser) => {
         };
       } else {
         return {
-          status: 400,
+          status: 201,
           message: "Invalid password",
         };
       }
     } else {
       return {
-        status: 400,
+        status: 201,
         message: "Email is not registered",
       };
     }

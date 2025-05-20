@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -9,16 +10,24 @@ import {
   FormControlLabel,
   Radio,
   Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  type SelectChangeEvent,
 } from "@mui/material";
 import "./styles.scss";
+import { register } from "../../utils/axios";
+import type { IformRegister } from "../../utils/types";
+
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IformRegister>({
     email: "",
     phone: "",
-    gender: "",
+    gender: "female",
     password: "",
     dateOfBirth: "",
     repeat_password: "",
+    age: "",
   });
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -30,15 +39,48 @@ const RegisterPage = () => {
     });
   };
 
-  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeSelect = (event: SelectChangeEvent) => {
     setFormData((item) => {
-      return { ...item, gender: event.target.value };
+      return {
+        ...item,
+        age: event.target.value,
+      };
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const validate = (form: IformRegister) => {
+    if (!form.email) {
+      alert("Email không được để trống");
+      return false;
+    }
+    if (!form.phone) {
+      alert("Số điện thoại không được để trống");
+      return false;
+    }
+
+    if (!form.password) {
+      alert("Mật khẩu không được để trống");
+      return false;
+    }
+
+    if (form.repeat_password !== form.password) {
+      alert("Mật khẩu không trùng khớp!");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
+    if (!validate(formData)) return;
+    try {
+      const res = await register(formData);
+      alert(res.data.message);
+    } catch (err) {
+      console.log(err);
+      alert("Đã có lỗi xảy ra!");
+    }
   };
 
   return (
@@ -60,7 +102,6 @@ const RegisterPage = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
           />
 
           <TextField
@@ -69,7 +110,6 @@ const RegisterPage = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            required
           />
 
           <FormControl>
@@ -77,9 +117,9 @@ const RegisterPage = () => {
             <RadioGroup
               row
               aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue={formData.gender || "female"}
+              value={formData.gender || "female"}
               name="gender"
-              onChange={handleChangeRadio}
+              onChange={handleChange}
             >
               <FormControlLabel
                 value={"female"}
@@ -108,6 +148,22 @@ const RegisterPage = () => {
             InputLabelProps={{ shrink: true }}
           />
 
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={formData.age}
+              label="Age"
+              name="age"
+              onChange={handleChangeSelect}
+            >
+              <MenuItem value={"10"}>Ten</MenuItem>
+              <MenuItem value={"20"}>Twenty</MenuItem>
+              <MenuItem value={"30"}>Thirty</MenuItem>
+            </Select>
+          </FormControl>
+
           <TextField
             type="password"
             name="password"
@@ -123,6 +179,16 @@ const RegisterPage = () => {
             value={formData.repeat_password}
             onChange={handleChange}
           />
+
+          <Typography
+            variant="body1"
+            component={Link}
+            to={"/login"}
+            color="text.secondary"
+            width={"fit-content"}
+          >
+            Đã có tài khoản? Đăng nhập ngay!
+          </Typography>
 
           <Button type="submit" variant="contained" sx={{ marginTop: "10px" }}>
             Đăng ký

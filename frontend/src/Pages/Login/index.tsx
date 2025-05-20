@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import "../Register/styles.scss";
+import type { IformLogin } from "../../utils/types";
+import { login } from "../../utils/axios";
+
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IformLogin>({
     email: "",
     password: "",
   });
@@ -16,8 +20,21 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const validate = () => {
+    if (formData.email === "" || formData.password === "") {
+      alert("Vui lòng nhập đầy đủ thông tin");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    validate();
+    if (validate()) {
+      const res = await login(formData);
+      alert(res.data.message);
+    }
   };
 
   return (
@@ -49,6 +66,16 @@ const LoginPage = () => {
             value={formData.password}
             onChange={handleChange}
           />
+
+          <Typography
+            variant="body1"
+            align="center"
+            color="text.secondary"
+            component={Link}
+            to="/register"
+          >
+            Bạn chưa có tài khoản? Đăng ký ngay!
+          </Typography>
 
           <Button type="submit" variant="contained" sx={{ marginTop: "10px" }}>
             Đăng nhập

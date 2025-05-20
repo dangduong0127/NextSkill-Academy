@@ -7,7 +7,7 @@ interface IUser extends Document {
   role: mongoose.Types.ObjectId;
   age: number;
   avatar: string;
-  phoneNumber: number;
+  phone: number;
 }
 
 export default IUser;

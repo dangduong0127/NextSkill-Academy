@@ -10,7 +10,11 @@ dotenv_1["default"].config();
 var app = express_1["default"]();
 var port = process.env.PORT || 3000;
 app.use(express_1["default"].json());
-app.use(cors_1["default"]());
+app.use(cors_1["default"]({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 app.use(express_1["default"].urlencoded({
     extended: true
 }));

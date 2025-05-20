@@ -36,8 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleCreateUser = exports.handleGetAllUser = void 0;
+exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
 var models_1 = require("../models");
+var bcrypt_1 = require("bcrypt");
+var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
     return __generator(this, function (_a) {
@@ -60,29 +62,109 @@ var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.handleGetAllUser = handleGetAllUser;
 var handleCreateUser = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, err_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var validate, hashedPassword, user, err_2;
+    var _a, _b, _c, _d, _e, _f, _g;
+    return __generator(this, function (_h) {
+        switch (_h.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, models_1.UserModel.create({
-                        name: data.name,
-                        email: data.email,
-                        password: data.password,
-                        role: data.role,
-                        age: data.age,
-                        avatar: data.avatar,
-                        phoneNumber: data.phoneNumber
-                    })];
+                _h.trys.push([0, 3, , 4]);
+                validate = function () {
+                    if (!data.phone)
+                        throw { status: 201, message: "Phone number is required" };
+                    if (!data.email)
+                        throw { status: 201, message: "Email is required" };
+                    if (!data.password)
+                        throw { status: 201, message: "Password is required" };
+                };
+                validate();
+                return [4 /*yield*/, bcrypt_1["default"].hash(data.password, saltRounds)];
             case 1:
-                user = _a.sent();
-                return [3 /*break*/, 3];
+                hashedPassword = _h.sent();
+                return [4 /*yield*/, models_1.UserModel.create({
+                        name: (_a = data.name) !== null && _a !== void 0 ? _a : "",
+                        email: data.email,
+                        password: hashedPassword,
+                        role: "681f6d5fa266955d8682a70f",
+                        age: (_b = data.age) !== null && _b !== void 0 ? _b : "",
+                        avatar: (_c = data.avatar) !== null && _c !== void 0 ? _c : "",
+                        phone: (_d = data.phone) !== null && _d !== void 0 ? _d : ""
+                    })];
             case 2:
-                err_2 = _a.sent();
-                console.log(err_2);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                user = _h.sent();
+                if (user) {
+                    return [2 /*return*/, {
+                            status: 201,
+                            message: "User created successfully"
+                        }];
+                }
+                else {
+                    return [2 /*return*/, {
+                            status: 201,
+                            message: "User created false"
+                        }];
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _h.sent();
+                if (err_2.code === 11000 && ((_e = err_2.keyPattern) === null || _e === void 0 ? void 0 : _e.email)) {
+                    return [2 /*return*/, {
+                            status: 201,
+                            message: "Email already exists"
+                        }];
+                }
+                return [2 /*return*/, {
+                        status: (_f = err_2.status) !== null && _f !== void 0 ? _f : 500,
+                        message: (_g = err_2.message) !== null && _g !== void 0 ? _g : "Internal server error"
+                    }];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.handleCreateUser = handleCreateUser;
+var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, comparePass, err_3;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 5, , 6]);
+                if (!data.email)
+                    throw { status: 201, message: "Email is required" };
+                if (!data.password)
+                    throw { status: 201, message: "Password is required" };
+                return [4 /*yield*/, models_1.UserModel.findOne({ email: data.email })];
+            case 1:
+                user = _c.sent();
+                if (!user) return [3 /*break*/, 3];
+                return [4 /*yield*/, bcrypt_1["default"].compare(data.password, user.password)];
+            case 2:
+                comparePass = _c.sent();
+                if (comparePass) {
+                    return [2 /*return*/, {
+                            status: 200,
+                            message: "Login successfully"
+                        }];
+                }
+                else {
+                    return [2 /*return*/, {
+                            status: 201,
+                            message: "Invalid password"
+                        }];
+                }
+                return [3 /*break*/, 4];
+            case 3: return [2 /*return*/, {
+                    status: 201,
+                    message: "Email is not registered"
+                }];
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                err_3 = _c.sent();
+                return [2 /*return*/, {
+                        status: (_a = err_3.status) !== null && _a !== void 0 ? _a : 500,
+                        message: (_b = err_3.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                    }];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleLogin = handleLogin;
