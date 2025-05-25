@@ -3,6 +3,8 @@ import {
   handleGetAllUser,
   handleCreateUser,
   handleLogin,
+  handleDeleteUser,
+  handleUpdateUser,
 } from "../services/user.services";
 
 const getAllUsers = async (req: Request, res: Response): Promise<void> => {
@@ -35,4 +37,35 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getAllUsers, createUser, loginController };
+const deleteUserController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    const response = await handleDeleteUser(userId);
+    res.status(Number(response.status)).json(response);
+  } catch (err) {
+    res.status(500).json({ err: err });
+  }
+};
+
+const updateUserController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const data = req.body;
+
+    const response = await handleUpdateUser(userId, data);
+    if (response) {
+      res.status(Number(response.status)).json(response);
+    }
+  } catch (err) {
+    res.status(500).json({ err: err });
+  }
+};
+
+export {
+  getAllUsers,
+  createUser,
+  loginController,
+  deleteUserController,
+  updateUserController,
+};

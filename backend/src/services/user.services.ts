@@ -1,6 +1,7 @@
 import { UserModel } from "../models";
 import { IUser } from "../interfaces";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -97,4 +98,55 @@ const handleLogin = async (data: IUser) => {
   }
 };
 
-export { handleGetAllUser, handleCreateUser, handleLogin };
+const handleDeleteUser = async (userId: string) => {
+  try {
+    if (!userId) throw { status: 201, message: "User ID is required" };
+
+    const user = await UserModel.findByIdAndDelete(userId);
+    if (user) {
+      return {
+        status: 200,
+        message: "User deleted successfully",
+      };
+    } else {
+      return {
+        status: 404,
+        message: "User not found",
+      };
+    }
+  } catch (err: any) {
+    return {
+      status: err.status ?? 500,
+      message: err.message ?? "Internal server error",
+    };
+  }
+};
+
+const handleUpdateUser = async (userId: string, data: IUser) => {
+  try {
+    if (!userId) throw new Error("missing required field: userId");
+    if (!data) throw new Error("missing  required data");
+
+    const user = await UserModel.findByIdAndUpdate(userId, data, { new: true });
+    if (user) {
+      return {
+        status: 200,
+        message: "User updated successfully",
+        user: user,
+      };
+    }
+  } catch (err: any) {
+    return {
+      status: err.status ?? 500,
+      message: err.message ?? "Internal server error",
+    };
+  }
+};
+
+export {
+  handleGetAllUser,
+  handleCreateUser,
+  handleLogin,
+  handleDeleteUser,
+  handleUpdateUser,
+};

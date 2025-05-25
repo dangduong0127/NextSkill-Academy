@@ -9,3 +9,14 @@ export interface IformRegister {
 }
 
 export type IformLogin = Pick<IformRegister, "email" | "password">;
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: "681f6d5fa266955d8682a70f";
+  age: number;
+  avatar: string;
+  phone: number;
+}

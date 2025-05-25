@@ -1,5 +1,5 @@
 import axios from "./axios.customize";
-import type { IformRegister, IformLogin } from "./types";
+import type { IformRegister, IformLogin, IUser } from "./types";
 
 const getAllUsers = () => {
   const API_URL = "/getAllUsers";
@@ -16,4 +16,14 @@ const login = (data: IformLogin) => {
   return axios.post(API_URL, data);
 };
 
-export { getAllUsers, register, login };
+const updateUser = (userId: string, data: Partial<IUser>) => {
+  const API_URL = `/updateUser/${userId}`;
+  return axios.put(API_URL, data);
+};
+
+const deleteUser = (userId: string) => {
+  const API_URL = `deleteUser/${userId}`;
+  return axios.delete(API_URL);
+};
+
+export { getAllUsers, register, login, updateUser, deleteUser };
