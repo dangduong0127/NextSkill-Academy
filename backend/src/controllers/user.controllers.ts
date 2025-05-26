@@ -33,7 +33,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
     if (response.status === 200) {
       res.cookie("token", response.token, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: "strict",
         maxAge: 3600000,
       });

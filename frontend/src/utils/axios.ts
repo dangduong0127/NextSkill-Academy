@@ -26,4 +26,9 @@ const deleteUser = (userId: string) => {
   return axios.delete(API_URL);
 };
 
-export { getAllUsers, register, login, updateUser, deleteUser };
+const checkAuth = () => {
+  const API_URL = "/auth/check-auth";
+  return axios.get(API_URL);
+};
+
+export { getAllUsers, register, login, updateUser, deleteUser, checkAuth };

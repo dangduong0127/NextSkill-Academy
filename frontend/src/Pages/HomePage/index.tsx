@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import type { RootState, AppDispatch } from "../../app/store";
 import { fetchAllUsers, updateUserThunk } from "../../features/users/userSlice";
 import type { IUser } from "../../utils/types";
+import { checkAuth } from "../../utils/axios";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,9 +17,9 @@ const HomePage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const testCheckAuth = fetch("http://localhost:3003/api/v1/auth/check-auth");
-    testCheckAuth.then((res) => res.json()).then((data) => console.log(data));
-  }, [users]);
+    // const testCheckAuth = fetch("http://localhost:3003/api/v1/auth/check-auth");
+    checkAuth().then((response) => console.log(response));
+  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <p>Error occurred</p>;
