@@ -1,7 +1,8 @@
 import { UserModel } from "../models";
 import { IUser } from "../interfaces";
 import bcrypt from "bcrypt";
-import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import type { StringValue } from "ms";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -74,9 +75,23 @@ const handleLogin = async (data: IUser) => {
     if (user) {
       const comparePass = await bcrypt.compare(data.password, user.password);
       if (comparePass) {
+        const jwtOptions: jwt.SignOptions = {
+          expiresIn: process.env.JWT_EXPIRES_IN as StringValue,
+        };
+
+        const access_token = jwt.sign(
+          {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+          },
+          process.env.JWT_SECRET!,
+          jwtOptions
+        );
+
         return {
           status: 200,
-          message: "Login successfully",
+          token: access_token,
         };
       } else {
         return {
@@ -97,7 +112,6 @@ const handleLogin = async (data: IUser) => {
     };
   }
 };
-
 const handleDeleteUser = async (userId: string) => {
   try {
     if (!userId) throw { status: 201, message: "User ID is required" };

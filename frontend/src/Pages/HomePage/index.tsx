@@ -15,6 +15,11 @@ const HomePage = () => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
+  useEffect(() => {
+    const testCheckAuth = fetch("http://localhost:3003/api/v1/auth/check-auth");
+    testCheckAuth.then((res) => res.json()).then((data) => console.log(data));
+  }, [users]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <p>Error occurred</p>;
   console.log(users);

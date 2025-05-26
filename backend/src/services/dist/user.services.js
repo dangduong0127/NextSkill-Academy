@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
+exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
+var jsonwebtoken_1 = require("jsonwebtoken");
 var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
@@ -122,7 +123,7 @@ var handleCreateUser = function (data) { return __awaiter(void 0, void 0, void 0
 }); };
 exports.handleCreateUser = handleCreateUser;
 var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, comparePass, err_3;
+    var user, comparePass, jwtOptions, access_token, err_3;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -140,9 +141,17 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
             case 2:
                 comparePass = _c.sent();
                 if (comparePass) {
+                    jwtOptions = {
+                        expiresIn: process.env.JWT_EXPIRES_IN
+                    };
+                    access_token = jsonwebtoken_1["default"].sign({
+                        id: user._id,
+                        email: user.email,
+                        role: user.role
+                    }, process.env.JWT_SECRET, jwtOptions);
                     return [2 /*return*/, {
                             status: 200,
-                            message: "Login successfully"
+                            token: access_token
                         }];
                 }
                 else {
@@ -168,3 +177,72 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.handleLogin = handleLogin;
+var handleDeleteUser = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, err_4;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 2, , 3]);
+                if (!userId)
+                    throw { status: 201, message: "User ID is required" };
+                return [4 /*yield*/, models_1.UserModel.findByIdAndDelete(userId)];
+            case 1:
+                user = _c.sent();
+                if (user) {
+                    return [2 /*return*/, {
+                            status: 200,
+                            message: "User deleted successfully"
+                        }];
+                }
+                else {
+                    return [2 /*return*/, {
+                            status: 404,
+                            message: "User not found"
+                        }];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                err_4 = _c.sent();
+                return [2 /*return*/, {
+                        status: (_a = err_4.status) !== null && _a !== void 0 ? _a : 500,
+                        message: (_b = err_4.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                    }];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleDeleteUser = handleDeleteUser;
+var handleUpdateUser = function (userId, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, err_5;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 2, , 3]);
+                if (!userId)
+                    throw new Error("missing required field: userId");
+                if (!data)
+                    throw new Error("missing  required data");
+                return [4 /*yield*/, models_1.UserModel.findByIdAndUpdate(userId, data, { "new": true })];
+            case 1:
+                user = _c.sent();
+                if (user) {
+                    return [2 /*return*/, {
+                            status: 200,
+                            message: "User updated successfully",
+                            user: user
+                        }];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                err_5 = _c.sent();
+                return [2 /*return*/, {
+                        status: (_a = err_5.status) !== null && _a !== void 0 ? _a : 500,
+                        message: (_b = err_5.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                    }];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleUpdateUser = handleUpdateUser;

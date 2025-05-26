@@ -33,7 +33,13 @@ const LoginPage = () => {
     validate();
     if (validate()) {
       const res = await login(formData);
-      alert(res.data.message);
+      const result = res.data;
+      if (result.status === 200) {
+        // localStorage.setItem("access_token", result.token);
+        alert(result.message);
+        window.location.href = "/";
+        alert(result.message);
+      }
     }
   };
 

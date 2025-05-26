@@ -7,12 +7,12 @@ const getAllUsers = () => {
 };
 
 const register = (data: IformRegister) => {
-  const API_URL = "/createUser";
+  const API_URL = "/auth/createUser";
   return axios.post(API_URL, data);
 };
 
 const login = (data: IformLogin) => {
-  const API_URL = "/login";
+  const API_URL = "/auth/login";
   return axios.post(API_URL, data);
 };
 

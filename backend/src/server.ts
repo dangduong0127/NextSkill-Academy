@@ -4,10 +4,12 @@ import router from "./routes";
 import connectDB from "./config/database";
 import path from "path";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
-
+app.use(cookieParser());
 app.use(express.json());
 
 app.use(

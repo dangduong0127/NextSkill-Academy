@@ -6,9 +6,11 @@ var routes_1 = require("./routes");
 var database_1 = require("./config/database");
 var path_1 = require("path");
 var cors_1 = require("cors");
+var cookie_parser_1 = require("cookie-parser");
 dotenv_1["default"].config();
 var app = express_1["default"]();
 var port = process.env.PORT || 3000;
+app.use(cookie_parser_1["default"]());
 app.use(express_1["default"].json());
 app.use(cors_1["default"]({
     origin: "http://localhost:5173",

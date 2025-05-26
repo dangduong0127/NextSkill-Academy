@@ -30,7 +30,20 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
     const response = await handleLogin(req.body);
-    res.status(Number(response.status)).json(response);
+    if (response.status === 200) {
+      res.cookie("token", response.token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 3600000,
+      });
+      res.status(200).json({
+        status: 200,
+        message: "Login Success",
+      });
+    } else {
+      res.status(Number(response.status)).json(response);
+    }
   } catch (err) {
     console.log("Error", err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -62,10 +75,21 @@ const updateUserController = async (req: Request, res: Response) => {
   }
 };
 
+const checkAuthController = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({
+      user: req.user,
+    });
+  } catch (err) {
+    res.status(500).json({ err: err });
+  }
+};
+
 export {
   getAllUsers,
   createUser,
   loginController,
   deleteUserController,
   updateUserController,
+  checkAuthController,
 };
