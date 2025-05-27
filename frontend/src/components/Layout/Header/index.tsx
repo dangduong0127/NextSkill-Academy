@@ -12,13 +12,16 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-// Thêm import thiếu
-// import MenuIcon from "@mui/icons-material/Menu";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../../../app/store";
+import { logoutThunk } from "../../../features/auth/authSlice";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [anchorActions, setAnchorActions] = useState<HTMLElement | null>(null);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const auth = useSelector((state: RootState) => state.auth);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -59,7 +62,6 @@ const Header = () => {
                 alt="Logo"
               />
             </Box>
-
             {/* Menu Navigation */}
             <Box
               sx={{ display: "flex", gap: "10px" }}
@@ -146,60 +148,111 @@ const Header = () => {
             </Box>
 
             {/* User Actions */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <IconButton
-                color="inherit"
-                onClick={handleOpenActions}
-                aria-controls={anchorActions ? "user-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={anchorActions ? "true" : undefined}
-              >
-                <Avatar alt="User" src="/avatar.png" />
-              </IconButton>
-
-              <Menu
-                id="user-menu"
-                anchorEl={anchorActions}
-                open={!!anchorActions}
-                onClose={handleCloseActions}
-                disableScrollLock={true}
-              >
-                <MenuItem
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                    padding: "8px 16px",
-                  }}
+            {auth.isAuthenticated === false ? (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton
+                  color="inherit"
+                  onClick={handleOpenActions}
+                  aria-controls={anchorActions ? "user-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={anchorActions ? "true" : undefined}
                 >
-                  <Button
-                    component={Link}
-                    to="/login"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={handleCloseActions}
+                  <Avatar alt="User" src={"/avatar.png"} />
+                </IconButton>
+
+                <Menu
+                  id="user-menu"
+                  anchorEl={anchorActions}
+                  open={!!anchorActions}
+                  onClose={handleCloseActions}
+                  disableScrollLock={true}
+                >
+                  <MenuItem
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      padding: "8px 16px",
+                    }}
                   >
-                    Login
-                  </Button>
-                  <Button
-                    component={Link}
-                    to="/register"
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    onClick={handleCloseActions}
+                    <Button
+                      component={Link}
+                      to="/login"
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={handleCloseActions}
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      component={Link}
+                      to="/register"
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      onClick={handleCloseActions}
+                    >
+                      Register
+                    </Button>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton
+                  color="inherit"
+                  onClick={handleOpenActions}
+                  aria-controls={anchorActions ? "user-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={anchorActions ? "true" : undefined}
+                >
+                  <Avatar alt="User" src={auth?.user?.avatar} />
+                </IconButton>
+
+                <Menu
+                  id="user-menu"
+                  anchorEl={anchorActions}
+                  open={!!anchorActions}
+                  onClose={handleCloseActions}
+                  disableScrollLock={true}
+                >
+                  <MenuItem
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      padding: "8px 16px",
+                    }}
                   >
-                    Register
-                  </Button>
-                </MenuItem>
-              </Menu>
-            </Box>
+                    <Button
+                      component={Link}
+                      to="/user/profile"
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      onClick={handleCloseActions}
+                    >
+                      setting
+                    </Button>
+                    <Button
+                      component={Link}
+                      to="/login"
+                      variant="contained"
+                      color="error"
+                      fullWidth
+                      onClick={() => dispatch(logoutThunk())}
+                    >
+                      Logout
+                    </Button>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
     </>
   );
 };
-
 export default Header;

@@ -5,7 +5,15 @@ import {
   handleLogin,
   handleDeleteUser,
   handleUpdateUser,
+  handleGetUserProfile,
 } from "../services/user.services";
+import { JwtPayload } from "jsonwebtoken";
+
+interface CustomJwtPayload extends JwtPayload {
+  id: string;
+  email?: string;
+  role?: string;
+}
 
 const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -56,8 +64,8 @@ const deleteUserController = async (req: Request, res: Response) => {
     console.log(userId);
     const response = await handleDeleteUser(userId);
     res.status(Number(response.status)).json(response);
-  } catch (err) {
-    res.status(500).json({ err: err });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Internal server error" });
   }
 };
 
@@ -70,19 +78,38 @@ const updateUserController = async (req: Request, res: Response) => {
     if (response) {
       res.status(Number(response.status)).json(response);
     }
-  } catch (err) {
-    res.status(500).json({ err: err });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Internal server error" });
   }
 };
 
 const checkAuthController = async (req: Request, res: Response) => {
   try {
+    const userId: string = (req.user as unknown as CustomJwtPayload).id;
+    const { user } = await handleGetUserProfile(userId);
+
     res.status(200).json({
-      user: req.user,
+      user: {
+        ...req.user,
+        avatar: user?.avatar,
+      },
     });
-  } catch (err) {
-    res.status(500).json({ err: err });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Internal server error" });
   }
+};
+
+const getUserController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Internal server error" });
+  }
+};
+
+const logoutController = async (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logout successful" });
 };
 
 export {
@@ -92,4 +119,6 @@ export {
   deleteUserController,
   updateUserController,
   checkAuthController,
+  getUserController,
+  logoutController,
 };

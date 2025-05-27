@@ -13,6 +13,8 @@ import RegisterPage from "./Pages/Register";
 import Layout from "./components/Layout";
 import ErrorPage from "./Pages/ErrorPage";
 import "./global.scss";
+import UserProfile from "./Pages/UserProfile";
+import { NotifierProvider } from "./components/Notifier/messageContext";
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -42,69 +44,80 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <BrowserRouter>
-          <CssBaseline />
-          <Box
-            sx={{ p: 2 }}
-            style={{
-              position: "fixed",
-              bottom: "20px",
-              right: "20px",
-            }}
-          >
-            <Button
-              style={{ borderRadius: "50%", padding: "20px" }}
-              variant="contained"
-              onClick={toggleTheme}
+        <NotifierProvider>
+          <BrowserRouter>
+            <CssBaseline />
+            <Box
+              sx={{ p: 2 }}
+              style={{
+                position: "fixed",
+                bottom: "20px",
+                right: "20px",
+              }}
             >
-              {mode === "light" ? (
-                <>
-                  <DarkModeIcon />
-                </>
-              ) : (
-                <LightModeIcon />
-              )}
-            </Button>
-          </Box>
+              <Button
+                style={{ borderRadius: "50%", padding: "20px" }}
+                variant="contained"
+                onClick={toggleTheme}
+              >
+                {mode === "light" ? (
+                  <>
+                    <DarkModeIcon />
+                  </>
+                ) : (
+                  <LightModeIcon />
+                )}
+              </Button>
+            </Box>
 
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Layout>
-                  <HomePage />
-                </Layout>
-              }
-            />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Layout>
+                    <HomePage />
+                  </Layout>
+                }
+              />
 
-            <Route
-              path="/login"
-              element={
-                <Layout>
-                  <LoginPage />
-                </Layout>
-              }
-            />
+              <Route
+                path="/login"
+                element={
+                  <Layout>
+                    <LoginPage />
+                  </Layout>
+                }
+              />
 
-            <Route
-              path="/register"
-              element={
-                <Layout>
-                  <RegisterPage />
-                </Layout>
-              }
-            ></Route>
+              <Route
+                path="/register"
+                element={
+                  <Layout>
+                    <RegisterPage />
+                  </Layout>
+                }
+              ></Route>
 
-            <Route
-              path="/*"
-              element={
-                <Layout>
-                  <ErrorPage />
-                </Layout>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
+              <Route
+                path="/user/profile"
+                element={
+                  <Layout>
+                    <UserProfile />
+                  </Layout>
+                }
+              />
+
+              <Route
+                path="/*"
+                element={
+                  <Layout>
+                    <ErrorPage />
+                  </Layout>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </NotifierProvider>
       </Provider>
     </ThemeProvider>
   );

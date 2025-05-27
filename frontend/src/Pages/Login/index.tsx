@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import "../Register/styles.scss";
 import type { IformLogin } from "../../utils/types";
 import { login } from "../../utils/axios";
+import { useNotifier } from "../../components/Notifier/messageContext";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { notify } = useNotifier();
   const [formData, setFormData] = useState<IformLogin>({
     email: "",
     password: "",
@@ -35,14 +38,11 @@ const LoginPage = () => {
       const res = await login(formData);
       const result = res.data;
       if (result.status === 200) {
-        // localStorage.setItem("access_token", result.token);
-        alert(result.message);
-        window.location.href = "/";
-        alert(result.message);
+        notify("success", "Login successfully");
+        navigate("/");
       }
     }
   };
-
   return (
     <>
       <Box className="form-wrapper">

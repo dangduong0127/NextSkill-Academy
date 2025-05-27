@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
+exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
 var jsonwebtoken_1 = require("jsonwebtoken");
@@ -246,3 +246,41 @@ var handleUpdateUser = function (userId, data) { return __awaiter(void 0, void 0
     });
 }); };
 exports.handleUpdateUser = handleUpdateUser;
+var handleGetUserProfile = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, err_6;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 2, , 3]);
+                if (!userId)
+                    throw new Error("missing required field: userId");
+                return [4 /*yield*/, models_1.UserModel.findById(userId).select("-password -__v")];
+            case 1:
+                user = _c.sent();
+                if (user) {
+                    return [2 /*return*/, {
+                            status: 200,
+                            message: "User profile retrieved successfully",
+                            user: user
+                        }];
+                }
+                else {
+                    return [2 /*return*/, {
+                            status: 404,
+                            message: "User not found",
+                            user: null
+                        }];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                err_6 = _c.sent();
+                return [2 /*return*/, {
+                        status: (_a = err_6.status) !== null && _a !== void 0 ? _a : 500,
+                        message: (_b = err_6.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                    }];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleGetUserProfile = handleGetUserProfile;

@@ -31,4 +31,17 @@ const checkAuth = () => {
   return axios.get(API_URL);
 };
 
-export { getAllUsers, register, login, updateUser, deleteUser, checkAuth };
+const logout = () => {
+  const API_URL = "/auth/logout";
+  return axios.post(API_URL);
+};
+
+export {
+  getAllUsers,
+  register,
+  login,
+  updateUser,
+  deleteUser,
+  checkAuth,
+  logout,
+};

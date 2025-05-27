@@ -157,10 +157,36 @@ const handleUpdateUser = async (userId: string, data: IUser) => {
   }
 };
 
+const handleGetUserProfile = async (userId: string) => {
+  try {
+    if (!userId) throw new Error("missing required field: userId");
+    const user = await UserModel.findById(userId).select("-password -__v");
+    if (user) {
+      return {
+        status: 200,
+        message: "User profile retrieved successfully",
+        user: user,
+      };
+    } else {
+      return {
+        status: 404,
+        message: "User not found",
+        user: null,
+      };
+    }
+  } catch (err: any) {
+    return {
+      status: err.status ?? 500,
+      message: err.message ?? "Internal server error",
+    };
+  }
+};
+
 export {
   handleGetAllUser,
   handleCreateUser,
   handleLogin,
   handleDeleteUser,
   handleUpdateUser,
+  handleGetUserProfile,
 };
