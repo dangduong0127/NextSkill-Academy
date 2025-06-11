@@ -1,0 +1,56 @@
+.main-userprofile {
+  //   height: 100%;
+  padding: 20px;
+  border-radius: 15px;
+
+  .main-userprofile-header {
+    background-image: url("http://localhost:3003/src/uploads/Rectangle 6691.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 100px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  form {
+    background-color: #fff;
+    min-height: 300px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding: 20px;
+
+    .header-form {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      .header-form-left {
+        display: flex;
+        gap: 20px;
+      }
+    }
+
+    .body-form {
+      display: flex;
+      gap: 20px;
+      .custom-textfield {
+        background-color: #e6e6e6;
+        border: none !important;
+        margin-bottom: 10px;
+      }
+      .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
+        padding: 8px;
+        border: none;
+      }
+    }
+
+    .footer-form {
+      .footer-form-content {
+        .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
+          background-color: #e6e6e6;
+          padding: 8px;
+          border: none;
+        }
+      }
+    }
+  }
+}

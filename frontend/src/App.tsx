@@ -15,6 +15,7 @@ import ErrorPage from "./Pages/ErrorPage";
 import "./global.scss";
 import UserProfile from "./Pages/UserProfile";
 import { NotifierProvider } from "./components/Notifier/messageContext";
+import DashboardLayout from "./Pages/DashBoard";
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -107,6 +108,14 @@ function App() {
                 }
               />
 
+              <Route
+                path="/dashboard"
+                element={
+                  <DashboardLayout>
+                    <h1>News</h1>
+                  </DashboardLayout>
+                }
+              />
               <Route
                 path="/*"
                 element={

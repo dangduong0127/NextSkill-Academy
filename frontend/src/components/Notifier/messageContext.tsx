@@ -4,9 +4,13 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import { Snackbar, Alert, type AlertColor } from "@mui/material";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../app/store";
+import { checkAuthThunk } from "../../features/auth/authSlice";
 
 type NotifierContextType = {
   notify: (type: AlertColor, message: string) => void;
@@ -46,6 +50,10 @@ export const NotifierProvider = ({
     setOpen(false);
   };
 
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(checkAuthThunk());
+  }, [dispatch]);
   return (
     <NotifierContext.Provider value={{ notify }}>
       {children}

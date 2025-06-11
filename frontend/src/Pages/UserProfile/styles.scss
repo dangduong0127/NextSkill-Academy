@@ -1,0 +1,73 @@
+section.user-profile-wrapper {
+  background-image: url("http://localhost:3003/src/uploads/bg-userprofile.jpg");
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .user-profile-container {
+    width: 1000px;
+    min-height: 600px;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+
+    .user-profile-sidebar {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 10%;
+      background-color: #fff;
+      border-top-left-radius: 30px;
+      border-bottom-left-radius: 30px;
+
+      .sidebar-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+      .sidebar-link:hover {
+        background: #e3ecff;
+        cursor: pointer;
+      }
+      .active {
+        background: linear-gradient(
+          to right,
+          #eaf1ff 20%,
+          #4181f97c 100%
+        ) !important;
+      }
+    }
+
+    .user-profile-main {
+      width: 90%;
+      height: 100%;
+      padding: 20px;
+      background-color: #e6e6e6;
+      border-top-right-radius: 30px;
+      border-bottom-right-radius: 30px;
+      .userprofile-header {
+        display: flex;
+        justify-content: space-between;
+        .userprofile-header-left {
+          .welcome-text {
+            font-size: 22px;
+            font-weight: 600;
+          }
+          p {
+            color: #ada7a7;
+          }
+        }
+
+        .userprofile-header-right {
+          display: flex;
+          gap: 1rem;
+          .avatar-user {
+          }
+        }
+      }
+    }
+  }
+}

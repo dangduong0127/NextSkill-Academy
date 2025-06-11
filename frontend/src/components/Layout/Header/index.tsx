@@ -227,6 +227,13 @@ const Header = () => {
                   >
                     <Button
                       component={Link}
+                      to="/dashboard"
+                      variant="contained"
+                    >
+                      Dashboard
+                    </Button>
+                    <Button
+                      component={Link}
                       to="/user/profile"
                       variant="outlined"
                       color="primary"
