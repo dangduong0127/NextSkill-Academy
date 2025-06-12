@@ -92,6 +92,10 @@ const checkAuthController = async (req: Request, res: Response) => {
       user: {
         ...req.user,
         avatar: user?.avatar,
+        name: user?.name,
+        phone: user?.phone,
+        age: user?.age,
+        address: user?.address,
       },
     });
   } catch (err: any) {

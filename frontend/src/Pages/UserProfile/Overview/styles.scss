@@ -45,6 +45,10 @@
 
     .footer-form {
       .footer-form-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
         .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input {
           background-color: #e6e6e6;
           padding: 8px;

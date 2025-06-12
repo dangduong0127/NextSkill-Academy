@@ -19,4 +19,5 @@ export interface IUser {
   age: number;
   avatar: string;
   phone: number;
+  address: string;
 }

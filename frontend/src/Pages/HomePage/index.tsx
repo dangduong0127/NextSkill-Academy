@@ -1,16 +1,17 @@
-import { Typography, Container, Button } from "@mui/material";
+// import { Typography, Container, Button } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import type { RootState, AppDispatch } from "../../app/store";
-import { fetchAllUsers, updateUserThunk } from "../../features/users/userSlice";
+import { fetchAllUsers } from "../../features/users/userSlice";
 import { checkAuthThunk } from "../../features/auth/authSlice";
-import type { IUser } from "../../utils/types";
+// import type { IUser } from "../../utils/types";
+import "./styles.scss";
+
+import HeroSection from "./Hero";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, users } = useSelector(
-    (state: RootState) => state.users
-  );
+  const { loading, error } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -21,7 +22,7 @@ const HomePage = () => {
   if (error) return <p>Error occurred</p>;
   return (
     <>
-      <Container>
+      {/* <Container>
         <Typography variant="h1" component="h1">
           Trang chủ
         </Typography>
@@ -51,7 +52,8 @@ const HomePage = () => {
         >
           Update User
         </Button>
-      </Container>
+      </Container> */}
+      <HeroSection />
     </>
   );
 };

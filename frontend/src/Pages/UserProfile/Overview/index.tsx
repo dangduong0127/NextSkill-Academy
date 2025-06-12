@@ -14,6 +14,7 @@ interface IOverviewProps {
 }
 
 const Overview = ({ data }: IOverviewProps) => {
+  console.log(data);
   return (
     <div className="main-userprofile">
       <div className="main-userprofile-header"></div>
@@ -60,49 +61,52 @@ const Overview = ({ data }: IOverviewProps) => {
             </FormControl>
 
             <FormControl sx={{ width: "100%" }}>
-              <FormLabel htmlFor="fullName">Full name</FormLabel>
+              <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
-                placeholder="Your full name"
-                value={data?.name ?? ""}
+                placeholder="Your email address"
+                value={data?.email ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
+                type="email"
               />
             </FormControl>
 
             <FormControl sx={{ width: "100%" }}>
-              <FormLabel htmlFor="fullName">Full name</FormLabel>
+              <FormLabel htmlFor="phoneNumber">Phone number</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
-                placeholder="Your full name"
-                value={data?.name ?? ""}
+                placeholder="Your phone number"
+                value={`0${data?.phone ?? ""}`}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
+                type="text"
               />
             </FormControl>
 
             <FormControl sx={{ width: "100%" }}>
-              <FormLabel htmlFor="fullName">Full name</FormLabel>
+              <FormLabel htmlFor="age">Your age</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
-                placeholder="Your full name"
-                value={data?.name ?? ""}
+                placeholder="Your age"
+                value={data?.age ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
+                type="number"
               />
             </FormControl>
           </div>
           <div className="body-form-right">
             <FormControl sx={{ width: "100%" }}>
-              <FormLabel htmlFor="fullName">Full name</FormLabel>
+              <FormLabel htmlFor="address">Address</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
-                placeholder="Your full name"
-                value={data?.name ?? ""}
+                placeholder="Your address"
+                value={data?.address ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
               />
@@ -154,22 +158,26 @@ const Overview = ({ data }: IOverviewProps) => {
             Change Password
           </Typography>
           <div className="footer-form-content">
-            <FormControl sx={{ width: "50%" }}>
+            <FormControl sx={{ width: "80%" }}>
               <FormLabel htmlFor="fullName">Current Password</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
                 placeholder="Your full name"
               />
-            </FormControl>
-            <br />
-            <FormControl sx={{ width: "50%" }}>
+
               <FormLabel htmlFor="fullName">New Password</FormLabel>
               <TextField
                 id=""
                 variant="outlined"
                 placeholder="Your full name"
               />
+            </FormControl>
+
+            <FormControl sx={{ width: "20%" }}>
+              <Button variant="contained" size="medium" color="success">
+                Lưu
+              </Button>
             </FormControl>
           </div>
         </div>

@@ -24,7 +24,7 @@ function App() {
     () =>
       createTheme({
         typography: {
-          fontFamily: '"Monserrat", san-serif',
+          fontFamily: '"Poppins", san-serif',
         },
         palette: {
           mode,

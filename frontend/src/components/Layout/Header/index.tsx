@@ -150,6 +150,13 @@ const Header = () => {
             {/* User Actions */}
             {auth.isAuthenticated === false ? (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{ borderRadius: "30px", textTransform: "capitalize" }}
+                >
+                  Enroll now
+                </Button>
                 <IconButton
                   color="inherit"
                   onClick={handleOpenActions}
@@ -200,6 +207,14 @@ const Header = () => {
               </Box>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{ borderRadius: "30px", textTransform: "capitalize" }}
+                >
+                  Enroll now
+                </Button>
+
                 <IconButton
                   color="inherit"
                   onClick={handleOpenActions}
