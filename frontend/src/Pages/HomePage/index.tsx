@@ -54,6 +54,16 @@ const HomePage = () => {
         </Button>
       </Container> */}
       <HeroSection />
+      <section style={{ display: "flex", justifyContent: "center" }}>
+        <div className="container">
+          <video autoPlay loop style={{ width: "100%" }}>
+            <source
+              src="http://localhost:3003/src/uploads/Purple Orange Modern Online Course Video.mp4"
+              type="video/mp4"
+            />
+          </video>
+        </div>
+      </section>
     </>
   );
 };
