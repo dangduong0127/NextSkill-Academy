@@ -8,6 +8,7 @@ import axios, {
 const instance: AxiosInstance = axios.create({
   baseURL: "http://localhost:3003/api/v1",
   withCredentials: true,
+  timeout: 1000 * 60 * 10,
 });
 
 // Request interceptor: thêm token nếu có
@@ -30,7 +31,12 @@ instance.interceptors.response.use(
     // Bạn có thể xử lý lỗi như 401, 403, 500 ở đây
     if (error.response?.status === 401) {
       // ví dụ: logout user
+      localStorage.removeItem("userInfo");
       console.error("Unauthorized - Token hết hạn");
+    }
+
+    if (error.response?.status === 410) {
+      console.log(error.response);
     }
     return Promise.reject(error);
   }

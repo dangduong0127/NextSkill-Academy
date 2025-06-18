@@ -37,8 +37,10 @@ const LoginPage = () => {
     if (validate()) {
       const res = await login(formData);
       const result = res.data;
+      console.log(result);
       if (result.status === 200) {
         notify("success", "Login successfully");
+        localStorage.setItem("userInfo", JSON.stringify(result?.userInfo));
         navigate("/");
       }
     }

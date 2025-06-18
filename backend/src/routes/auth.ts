@@ -6,13 +6,15 @@ import {
   checkAuthController,
   getUserController,
   logoutController,
+  refreshTokenController,
 } from "../controllers/user.controllers";
 const router = Router();
 
 router.post("/createUser", createUser);
 router.post("/login", loginController);
+router.post("/logout", logoutController);
 router.get("/check-auth", authMiddleware, checkAuthController);
 router.post("/me/:userId", authMiddleware, getUserController);
-router.post("/logout", authMiddleware, logoutController);
+router.put("/refresh-token", refreshTokenController);
 
 export default router;

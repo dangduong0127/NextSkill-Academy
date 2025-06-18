@@ -8,6 +8,7 @@ import {
   handleGetUserProfile,
 } from "../services/user.services";
 import { JwtPayload } from "jsonwebtoken";
+import ms from "ms";
 
 interface CustomJwtPayload extends JwtPayload {
   id: string;
@@ -39,15 +40,24 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
     const response = await handleLogin(req.body);
     if (response.status === 200) {
-      res.cookie("token", response.token, {
+      res.cookie("accessToken", response.accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-        maxAge: 3600000,
+        secure: true,
+        sameSite: "none",
+        maxAge: ms("5 seconds"),
       });
+
+      res.cookie("refreshToken", response.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: ms("7 days"),
+      });
+
       res.status(200).json({
         status: 200,
         message: "Login Success",
+        userInfo: response.user,
       });
     } else {
       res.status(Number(response.status)).json(response);
@@ -112,8 +122,18 @@ const getUserController = async (req: Request, res: Response) => {
 };
 
 const logoutController = async (req: Request, res: Response) => {
-  res.clearCookie("token");
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+
   res.status(200).json({ message: "Logout successful" });
+};
+
+const refreshTokenController = async (req: Request, res: Response) => {
+  try {
+    const access_token = req.cookies?.accressToken;
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export {
@@ -125,4 +145,5 @@ export {
   checkAuthController,
   getUserController,
   logoutController,
+  refreshTokenController,
 };

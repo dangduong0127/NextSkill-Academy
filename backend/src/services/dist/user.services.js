@@ -40,6 +40,7 @@ exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUs
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
 var jsonwebtoken_1 = require("jsonwebtoken");
+var ms_1 = require("ms");
 var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
@@ -123,7 +124,7 @@ var handleCreateUser = function (data) { return __awaiter(void 0, void 0, void 0
 }); };
 exports.handleCreateUser = handleCreateUser;
 var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, comparePass, jwtOptions, access_token, err_3;
+    var user, comparePass, userInfo, access_token, refresh_token, err_3;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -141,17 +142,24 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
             case 2:
                 comparePass = _c.sent();
                 if (comparePass) {
-                    jwtOptions = {
-                        expiresIn: process.env.JWT_EXPIRES_IN
-                    };
-                    access_token = jsonwebtoken_1["default"].sign({
+                    userInfo = {
                         id: user._id,
                         email: user.email,
                         role: user.role
-                    }, process.env.JWT_SECRET, jwtOptions);
+                    };
+                    access_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_ACCESS_TOKEN_SECRET, {
+                        // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+                        expiresIn: ms_1["default"]("1h")
+                    });
+                    refresh_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_REFRESH_TOKEN_SECRET, {
+                        // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+                        expiresIn: ms_1["default"]("1 day")
+                    });
                     return [2 /*return*/, {
                             status: 200,
-                            token: access_token
+                            accessToken: access_token,
+                            refreshToken: refresh_token,
+                            user: userInfo
                         }];
                 }
                 else {
