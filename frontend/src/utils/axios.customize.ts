@@ -4,6 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
+import { logout, refreshToken } from "./axios";
 
 const instance: AxiosInstance = axios.create({
   baseURL: "http://localhost:3003/api/v1",
@@ -29,13 +30,44 @@ instance.interceptors.response.use(
   },
   (error: AxiosError) => {
     // Bạn có thể xử lý lỗi như 401, 403, 500 ở đây
-    if (error.response?.status === 401) {
-      // ví dụ: logout user
-      localStorage.removeItem("userInfo");
-      console.error("Unauthorized - Token hết hạn");
+
+    const originalRequest: any = error.config;
+    originalRequest.withCredentials = true;
+    if (error.response?.status === 410 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      return refreshToken()
+        .then((res) => {
+          console.log("res from refreshtoken api", res);
+          localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+          return instance(originalRequest);
+        })
+        .catch((_err) => {
+          // logout()
+          //   .then(() => {
+          //     localStorage.removeItem("userInfo");
+          //     console.error("Unauthorized - Token hết hạn");
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //   });
+
+          return Promise.reject(_err);
+        });
     }
 
-    if (error.response?.status === 410) {
+    // if (error.response?.status === 401) {
+    //   // ví dụ: logout user
+    //   logout()
+    //     .then(() => {
+    //       localStorage.removeItem("userInfo");
+    //       console.error("Unauthorized - Token hết hạn");
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }
+
+    if (error.response?.status !== 410) {
       console.log(error.response);
     }
     return Promise.reject(error);

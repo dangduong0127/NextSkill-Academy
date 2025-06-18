@@ -50,10 +50,10 @@ export const NotifierProvider = ({
     setOpen(false);
   };
 
-  const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    dispatch(checkAuthThunk());
-  }, [dispatch]);
+  // const dispatch = useDispatch<AppDispatch>();
+  // useEffect(() => {
+  //   dispatch(checkAuthThunk());
+  // }, [dispatch]);
   return (
     <NotifierContext.Provider value={{ notify }}>
       {children}

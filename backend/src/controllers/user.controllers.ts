@@ -6,9 +6,11 @@ import {
   handleDeleteUser,
   handleUpdateUser,
   handleGetUserProfile,
+  handleRefreshToken,
 } from "../services/user.services";
 import { JwtPayload } from "jsonwebtoken";
 import ms from "ms";
+import { StatusCodes } from "http-status-codes";
 
 interface CustomJwtPayload extends JwtPayload {
   id: string;
@@ -44,7 +46,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: ms("5 seconds"),
+        maxAge: ms("2h"),
       });
 
       res.cookie("refreshToken", response.refreshToken, {
@@ -130,7 +132,22 @@ const logoutController = async (req: Request, res: Response) => {
 
 const refreshTokenController = async (req: Request, res: Response) => {
   try {
-    const access_token = req.cookies?.accressToken;
+    const refresh_token = req.cookies?.refreshToken;
+    const response = await handleRefreshToken(refresh_token);
+
+    if (response?.status === StatusCodes.OK) {
+      res.cookie("accessToken", response.createNewAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: ms("1 hours"),
+      });
+    }
+
+    res.status(StatusCodes.OK).json({
+      message: "Refresh token successful",
+      userInfo: response?.user,
+    });
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }

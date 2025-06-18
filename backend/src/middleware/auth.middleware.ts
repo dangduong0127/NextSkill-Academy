@@ -29,7 +29,6 @@ const authMiddleware = (
     res.status(StatusCodes.UNAUTHORIZED).json({ message: "No token provided" });
     return;
   }
-
   try {
     const accessTokenDecoded = jwt.verify(
       access_token,

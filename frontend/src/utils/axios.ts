@@ -36,6 +36,11 @@ const logout = () => {
   return axios.post(API_URL);
 };
 
+const refreshToken = () => {
+  const API_URL = "/auth/refresh-token";
+  return axios.put(API_URL);
+};
+
 export {
   getAllUsers,
   register,
@@ -44,4 +49,5 @@ export {
   deleteUser,
   checkAuth,
   logout,
+  refreshToken,
 };

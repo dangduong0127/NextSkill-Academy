@@ -3,6 +3,7 @@ import { IUser } from "../interfaces";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import ms from "ms";
+import { StatusCodes } from "http-status-codes";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -12,7 +13,7 @@ const handleGetAllUser = async () => {
       .select("-password -__v");
     return users;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 
@@ -197,6 +198,48 @@ const handleGetUserProfile = async (userId: string) => {
   }
 };
 
+const handleRefreshToken = async (refreshToken: string) => {
+  try {
+    if (refreshToken) {
+      const refreshTokenDecoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_TOKEN_SECRET
+      );
+      if (typeof refreshTokenDecoded === "string") {
+        throw new Error("Invalid refresh token format");
+      }
+      if (!refreshTokenDecoded || !refreshTokenDecoded.id) {
+        throw new Error("Invalid refresh token");
+      }
+
+      const createNewAccessToken = jwt.sign(
+        {
+          id: refreshTokenDecoded.id,
+          email: refreshTokenDecoded.email,
+          role: refreshTokenDecoded.role,
+        },
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        { expiresIn: ms("1h") }
+      );
+
+      return {
+        status: StatusCodes.OK,
+        createNewAccessToken,
+        user: {
+          id: refreshTokenDecoded.id,
+          email: refreshTokenDecoded.email,
+          role: refreshTokenDecoded.role,
+        },
+      };
+    }
+  } catch (err: any) {
+    return {
+      status: err.status ?? 500,
+      message: err.message ?? "Internal server error",
+    };
+  }
+};
+
 export {
   handleGetAllUser,
   handleCreateUser,
@@ -204,4 +247,5 @@ export {
   handleDeleteUser,
   handleUpdateUser,
   handleGetUserProfile,
+  handleRefreshToken,
 };
