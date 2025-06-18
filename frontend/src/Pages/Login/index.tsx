@@ -40,6 +40,8 @@ const LoginPage = () => {
       if (result.status === 200) {
         notify("success", "Login successfully");
         navigate("/");
+      } else {
+        notify("error", result.message);
       }
     }
   };

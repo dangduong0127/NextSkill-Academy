@@ -1,0 +1,25 @@
+section.statistics-section {
+  display: flex;
+  justify-content: center;
+  padding: 50px 0;
+
+  .container {
+    .statistics-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      .col-inner {
+        text-align: center;
+        min-width: 300px;
+        span {
+          color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+          font-size: 2.25rem;
+          line-height: 2.5rem;
+        }
+        p {
+          color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+        }
+      }
+    }
+  }
+}

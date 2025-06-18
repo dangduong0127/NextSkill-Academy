@@ -1,25 +1,26 @@
 // import { Typography, Container, Button } from "@mui/material";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import type { RootState, AppDispatch } from "../../app/store";
+import type { AppDispatch } from "../../app/store";
 import { fetchAllUsers } from "../../features/users/userSlice";
 import { checkAuthThunk } from "../../features/auth/authSlice";
 // import type { IUser } from "../../utils/types";
 import "./styles.scss";
-
 import HeroSection from "./Hero";
+import Statistics from "./Statistics";
+import OurFeatures from "./OurFeatures";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.users);
+  // const { loading, error } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(checkAuthThunk());
   }, [dispatch]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <p>Error occurred</p>;
+  // if (loading) return <div>Loading...</div>;
+  // if (error) return <p>Error occurred</p>;
   return (
     <>
       {/* <Container>
@@ -54,6 +55,8 @@ const HomePage = () => {
         </Button>
       </Container> */}
       <HeroSection />
+      <Statistics />
+      <OurFeatures />
     </>
   );
 };
