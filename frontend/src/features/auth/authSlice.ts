@@ -27,6 +27,7 @@ const checkAuthThunk = createAsyncThunk(
 
 const logoutThunk = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
+    localStorage.removeItem("userInfo");
     const response = await logout();
     return response.data;
   } catch (err) {

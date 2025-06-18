@@ -1,6 +1,12 @@
 // App.js
 import { useState, useMemo } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, Button, Box } from "@mui/material";
 import { Provider } from "react-redux";
@@ -42,6 +48,18 @@ function App() {
     setMode((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  const ProtectedRoute = () => {
+    const user = localStorage.getItem("userInfo");
+    if (!user) return <Navigate to="/login" replace={true} />;
+    return <Outlet />;
+  };
+
+  const AuthorizedRoute = () => {
+    const user = localStorage.getItem("userInfo");
+    if (user) return <Navigate to="/" replace={true} />;
+    return <Outlet />;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
@@ -80,15 +98,16 @@ function App() {
                   </Layout>
                 }
               />
-
-              <Route
-                path="/login"
-                element={
-                  <Layout>
-                    <LoginPage />
-                  </Layout>
-                }
-              />
+              <Route element={<AuthorizedRoute />}>
+                <Route
+                  path="/login"
+                  element={
+                    <Layout>
+                      <LoginPage />
+                    </Layout>
+                  }
+                />
+              </Route>
 
               <Route
                 path="/register"
@@ -99,23 +118,25 @@ function App() {
                 }
               ></Route>
 
-              <Route
-                path="/user/profile"
-                element={
-                  <Layout>
-                    <UserProfile />
-                  </Layout>
-                }
-              />
+              <Route element={<ProtectedRoute />}>
+                <Route
+                  path="/user/profile"
+                  element={
+                    <Layout>
+                      <UserProfile />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <DashboardLayout>
+                      <h1>News</h1>
+                    </DashboardLayout>
+                  }
+                />
+              </Route>
 
-              <Route
-                path="/dashboard"
-                element={
-                  <DashboardLayout>
-                    <h1>News</h1>
-                  </DashboardLayout>
-                }
-              />
               <Route
                 path="/*"
                 element={

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
+import { StatusCodes } from "http-status-codes";
 interface JwtPayload {
   user: {
     userId: string;
@@ -24,20 +24,27 @@ const authMiddleware = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.cookies.token;
-  if (!token) {
-    res.status(401).json({ message: "No token provided" });
+  const access_token = req.cookies?.accessToken;
+  if (!access_token) {
+    res.status(StatusCodes.UNAUTHORIZED).json({ message: "No token provided" });
     return;
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
-    req.user = decoded;
+    const accessTokenDecoded = jwt.verify(
+      access_token,
+      process.env.JWT_ACCESS_TOKEN_SECRET
+    ) as JwtPayload;
+    req.user = accessTokenDecoded;
     next();
-  } catch (err) {
-    console.error(err);
-    res.status(401).json({ message: "Invalid token" });
-    return;
+  } catch (err: any) {
+    if (err.message.includes("jwt expired")) {
+      res.status(StatusCodes.GONE).json({ message: "Token expired" });
+      return;
+    }
+    res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "Unauthorized pls login again" });
   }
 };
 

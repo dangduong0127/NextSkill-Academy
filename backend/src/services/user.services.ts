@@ -2,7 +2,7 @@ import { UserModel } from "../models";
 import { IUser } from "../interfaces";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import type { StringValue } from "ms";
+import ms from "ms";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -75,23 +75,38 @@ const handleLogin = async (data: IUser) => {
     if (user) {
       const comparePass = await bcrypt.compare(data.password, user.password);
       if (comparePass) {
-        const jwtOptions: jwt.SignOptions = {
-          expiresIn: process.env.JWT_EXPIRES_IN as StringValue,
+        // const jwtOptions: jwt.SignOptions = {
+        //   expiresIn: process.env.JWT_EXPIRES_IN as StringValue,
+        // };
+        const userInfo = {
+          id: user._id,
+          email: user.email,
+          role: user.role,
         };
 
         const access_token = jwt.sign(
+          userInfo,
+          process.env.JWT_ACCESS_TOKEN_SECRET!,
           {
-            id: user._id,
-            email: user.email,
-            role: user.role,
-          },
-          process.env.JWT_SECRET!,
-          jwtOptions
+            // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+            expiresIn: ms("1h"),
+          }
+        );
+
+        const refresh_token = jwt.sign(
+          userInfo,
+          process.env.JWT_REFRESH_TOKEN_SECRET!,
+          {
+            // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+            expiresIn: ms("1 day"),
+          }
         );
 
         return {
           status: 200,
-          token: access_token,
+          accessToken: access_token,
+          refreshToken: refresh_token,
+          user: userInfo,
         };
       } else {
         return {
