@@ -36,11 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
+exports.handleRefreshToken = exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
 var jsonwebtoken_1 = require("jsonwebtoken");
 var ms_1 = require("ms");
+var http_status_codes_1 = require("http-status-codes");
 var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
@@ -56,8 +57,7 @@ var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, fu
                 return [2 /*return*/, users];
             case 2:
                 err_1 = _a.sent();
-                console.log(err_1);
-                return [3 /*break*/, 3];
+                throw err_1;
             case 3: return [2 /*return*/];
         }
     });
@@ -148,11 +148,11 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
                         role: user.role
                     };
                     access_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_ACCESS_TOKEN_SECRET, {
-                        // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
-                        expiresIn: ms_1["default"]("1h")
+                        algorithm: "HS256",
+                        expiresIn: "1h"
                     });
                     refresh_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_REFRESH_TOKEN_SECRET, {
-                        // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+                        algorithm: "HS256",
                         expiresIn: ms_1["default"]("1 day")
                     });
                     return [2 /*return*/, {
@@ -292,3 +292,42 @@ var handleGetUserProfile = function (userId) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.handleGetUserProfile = handleGetUserProfile;
+var handleRefreshToken = function (refreshToken) { return __awaiter(void 0, void 0, void 0, function () {
+    var refreshTokenDecoded, createNewAccessToken;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        try {
+            if (refreshToken) {
+                refreshTokenDecoded = jsonwebtoken_1["default"].verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
+                if (typeof refreshTokenDecoded === "string") {
+                    throw new Error("Invalid refresh token format");
+                }
+                if (!refreshTokenDecoded || !refreshTokenDecoded.id) {
+                    throw new Error("Invalid refresh token");
+                }
+                createNewAccessToken = jsonwebtoken_1["default"].sign({
+                    id: refreshTokenDecoded.id,
+                    email: refreshTokenDecoded.email,
+                    role: refreshTokenDecoded.role
+                }, process.env.JWT_ACCESS_TOKEN_SECRET, { algorithm: "HS256", expiresIn: "1h" });
+                return [2 /*return*/, {
+                        status: http_status_codes_1.StatusCodes.OK,
+                        createNewAccessToken: createNewAccessToken,
+                        user: {
+                            id: refreshTokenDecoded.id,
+                            email: refreshTokenDecoded.email,
+                            role: refreshTokenDecoded.role
+                        }
+                    }];
+            }
+        }
+        catch (err) {
+            return [2 /*return*/, {
+                    status: (_a = err.status) !== null && _a !== void 0 ? _a : 500,
+                    message: (_b = err.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                }];
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.handleRefreshToken = handleRefreshToken;

@@ -44,16 +44,16 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
     if (response.status === 200) {
       res.cookie("accessToken", response.accessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: ms("2h"),
+        secure: false,
+        sameSite: "lax",
+        maxAge: ms("1h"),
       });
 
       res.cookie("refreshToken", response.refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: ms("7 days"),
+        secure: false,
+        sameSite: "lax",
+        maxAge: ms("1 day"),
       });
 
       res.status(200).json({
@@ -138,9 +138,9 @@ const refreshTokenController = async (req: Request, res: Response) => {
     if (response?.status === StatusCodes.OK) {
       res.cookie("accessToken", response.createNewAccessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: ms("1 hours"),
+        secure: false,
+        sameSite: "lax",
+        maxAge: ms("1h"),
       });
     }
 

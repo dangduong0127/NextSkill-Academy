@@ -89,8 +89,8 @@ const handleLogin = async (data: IUser) => {
           userInfo,
           process.env.JWT_ACCESS_TOKEN_SECRET!,
           {
-            // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
-            expiresIn: ms("1h"),
+            algorithm: "HS256",
+            expiresIn: "1h",
           }
         );
 
@@ -98,7 +98,7 @@ const handleLogin = async (data: IUser) => {
           userInfo,
           process.env.JWT_REFRESH_TOKEN_SECRET!,
           {
-            // expiresIn: process.env.JWT_ACCRESS_TOKEN_EXPIRES_IN,
+            algorithm: "HS256",
             expiresIn: ms("1 day"),
           }
         );
@@ -219,7 +219,7 @@ const handleRefreshToken = async (refreshToken: string) => {
           role: refreshTokenDecoded.role,
         },
         process.env.JWT_ACCESS_TOKEN_SECRET,
-        { expiresIn: ms("1h") }
+        { algorithm: "HS256", expiresIn: "1h" }
       );
 
       return {

@@ -37,7 +37,7 @@ const authMiddleware = (
     req.user = accessTokenDecoded;
     next();
   } catch (err: any) {
-    if (err.message.includes("jwt expired")) {
+    if (err.message?.includes("jwt expired")) {
       res.status(StatusCodes.GONE).json({ message: "Token expired" });
       return;
     }

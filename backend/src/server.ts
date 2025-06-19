@@ -8,6 +8,13 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
+
+// Fix Cache from disk from ExpressJS
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 const port = process.env.PORT || 3000;
 app.use(cookieParser());
 app.use(express.json());

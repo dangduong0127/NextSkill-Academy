@@ -9,6 +9,11 @@ var cors_1 = require("cors");
 var cookie_parser_1 = require("cookie-parser");
 dotenv_1["default"].config();
 var app = express_1["default"]();
+// Fix Cache from disk from ExpressJS
+app.use(function (req, res, next) {
+    res.set("Cache-Control", "no-store");
+    next();
+});
 var port = process.env.PORT || 3000;
 app.use(cookie_parser_1["default"]());
 app.use(express_1["default"].json());

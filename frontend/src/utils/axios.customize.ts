@@ -30,7 +30,7 @@ instance.interceptors.response.use(
   },
   (error: AxiosError) => {
     // Bạn có thể xử lý lỗi như 401, 403, 500 ở đây
-
+    // console.log(error.response?.status);
     const originalRequest: any = error.config;
     originalRequest.withCredentials = true;
     if (error.response?.status === 410 && !originalRequest._retry) {
@@ -38,34 +38,37 @@ instance.interceptors.response.use(
       return refreshToken()
         .then((res) => {
           console.log("res from refreshtoken api", res);
-          localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+          // localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+
           return instance(originalRequest);
         })
         .catch((_err) => {
-          // logout()
-          //   .then(() => {
-          //     localStorage.removeItem("userInfo");
-          //     console.error("Unauthorized - Token hết hạn");
-          //   })
-          //   .catch((error) => {
-          //     console.log(error);
-          //   });
+          logout()
+            .then(() => {
+              localStorage.removeItem("userInfo");
+              console.error("Unauthorized - Token hết hạn");
+              window.location.href = "/login";
+            })
+            .catch((error) => {
+              console.log(error);
+            });
 
           return Promise.reject(_err);
         });
     }
 
-    // if (error.response?.status === 401) {
-    //   // ví dụ: logout user
-    //   logout()
-    //     .then(() => {
-    //       localStorage.removeItem("userInfo");
-    //       console.error("Unauthorized - Token hết hạn");
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
+    if (error.response?.status === 401) {
+      // ví dụ: logout user
+      logout()
+        .then(() => {
+          localStorage.removeItem("userInfo");
+          console.error("Unauthorized - Token hết hạn");
+          window.location.href = "/login";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
     if (error.response?.status !== 410) {
       console.log(error.response);
