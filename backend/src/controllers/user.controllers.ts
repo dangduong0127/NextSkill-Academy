@@ -44,15 +44,15 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
     if (response.status === 200) {
       res.cookie("accessToken", response.accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production" ? false : true,
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
         maxAge: ms("1h"),
       });
 
       res.cookie("refreshToken", response.refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production" ? false : true,
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
         maxAge: ms("1 day"),
       });
 
@@ -138,8 +138,8 @@ const refreshTokenController = async (req: Request, res: Response) => {
     if (response?.status === StatusCodes.OK) {
       res.cookie("accessToken", response.createNewAccessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production" ? false : true,
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
         maxAge: ms("1h"),
       });
     }

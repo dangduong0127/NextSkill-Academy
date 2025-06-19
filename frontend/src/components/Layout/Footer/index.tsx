@@ -81,9 +81,11 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor:
-          theme.palette.mode === "dark" ? "grey.900" : "grey.100",
-        color: theme.palette.mode === "dark" ? "grey.300" : "grey.700",
+        background:
+          theme.palette.mode === "dark"
+            ? "grey.900"
+            : "linear-gradient(90deg, #3b82f6 0%,rgb(67, 120, 233) 100%)",
+        color: theme.palette.mode === "dark" ? "grey.300" : "white",
         py: 6,
         mt: "auto",
       }}
@@ -91,7 +93,7 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Product Info */}
-          <Grid xs={12} sm={6} md={3}>
+          <Grid>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
               {footerSections.productInfo.title}
             </Typography>
@@ -118,7 +120,7 @@ const Footer = () => {
           </Grid>
 
           {/* Customer Resources */}
-          <Grid xs={12} sm={6} md={3}>
+          <Grid>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
               {footerSections.customerResources.title}
             </Typography>
@@ -145,7 +147,7 @@ const Footer = () => {
           </Grid>
 
           {/* About Us */}
-          <Grid xs={12} sm={6} md={3}>
+          <Grid>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
               {footerSections.aboutUs.title}
             </Typography>
@@ -172,7 +174,7 @@ const Footer = () => {
           </Grid>
 
           {/* Contact + Map */}
-          <Grid xs={12} sm={6} md={3}>
+          <Grid>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
               Contact
             </Typography>
@@ -336,5 +338,4 @@ const Footer = () => {
     </Box>
   );
 };
-
 export default Footer;

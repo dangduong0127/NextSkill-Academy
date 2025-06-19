@@ -40,7 +40,6 @@ exports.handleRefreshToken = exports.handleGetUserProfile = exports.handleUpdate
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
 var jsonwebtoken_1 = require("jsonwebtoken");
-var ms_1 = require("ms");
 var http_status_codes_1 = require("http-status-codes");
 var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -149,11 +148,11 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
                     };
                     access_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_ACCESS_TOKEN_SECRET, {
                         algorithm: "HS256",
-                        expiresIn: "1h"
+                        expiresIn: 5
                     });
                     refresh_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_REFRESH_TOKEN_SECRET, {
                         algorithm: "HS256",
-                        expiresIn: ms_1["default"]("1 day")
+                        expiresIn: 15
                     });
                     return [2 /*return*/, {
                             status: 200,
@@ -309,7 +308,7 @@ var handleRefreshToken = function (refreshToken) { return __awaiter(void 0, void
                     id: refreshTokenDecoded.id,
                     email: refreshTokenDecoded.email,
                     role: refreshTokenDecoded.role
-                }, process.env.JWT_ACCESS_TOKEN_SECRET, { algorithm: "HS256", expiresIn: "1h" });
+                }, process.env.JWT_ACCESS_TOKEN_SECRET, { algorithm: "HS256", expiresIn: 5 });
                 return [2 /*return*/, {
                         status: http_status_codes_1.StatusCodes.OK,
                         createNewAccessToken: createNewAccessToken,

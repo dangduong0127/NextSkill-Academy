@@ -24,6 +24,8 @@ instance.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
+let refreshTokenPromise: Promise<void> | null = null;
+
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
@@ -31,30 +33,40 @@ instance.interceptors.response.use(
   (error: AxiosError) => {
     // Bạn có thể xử lý lỗi như 401, 403, 500 ở đây
     // console.log(error.response?.status);
-    const originalRequest: any = error.config;
+    const originalRequest: InternalAxiosRequestConfig & { _retry?: boolean } =
+      error.config as InternalAxiosRequestConfig;
     originalRequest.withCredentials = true;
+
     if (error.response?.status === 410 && !originalRequest._retry) {
       originalRequest._retry = true;
-      return refreshToken()
-        .then((res) => {
-          console.log("res from refreshtoken api", res);
-          // localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = refreshToken()
+          .then(() => {
+            // console.log("res from refreshtoken api", res);
+            // localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+            // return instance(originalRequest);
+          })
+          .catch((_err) => {
+            logout()
+              .then(() => {
+                localStorage.removeItem("userInfo");
+                console.error("Unauthorized - Token hết hạn");
+                window.location.href = "/login";
+              })
+              .catch((error) => {
+                console.log(error);
+              });
 
-          return instance(originalRequest);
-        })
-        .catch((_err) => {
-          logout()
-            .then(() => {
-              localStorage.removeItem("userInfo");
-              console.error("Unauthorized - Token hết hạn");
-              window.location.href = "/login";
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            return Promise.reject(_err);
+          })
+          .finally(() => {
+            refreshTokenPromise = null;
+          });
+      }
 
-          return Promise.reject(_err);
-        });
+      return refreshTokenPromise.then(() => {
+        return instance(originalRequest);
+      });
     }
 
     if (error.response?.status === 401) {
@@ -63,7 +75,6 @@ instance.interceptors.response.use(
         .then(() => {
           localStorage.removeItem("userInfo");
           console.error("Unauthorized - Token hết hạn");
-          window.location.href = "/login";
         })
         .catch((error) => {
           console.log(error);
@@ -76,5 +87,4 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 export default instance;

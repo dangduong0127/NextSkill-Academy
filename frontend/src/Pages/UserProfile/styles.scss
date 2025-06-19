@@ -1,7 +1,7 @@
 section.user-profile-wrapper {
   background-image: url("http://localhost:3003/src/uploads/bg-userprofile.jpg");
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
