@@ -22,8 +22,7 @@ import "./global.scss";
 import UserProfile from "./Pages/UserProfile";
 import { NotifierProvider } from "./components/Notifier/messageContext";
 import DashboardLayout from "./Pages/DashBoard";
-import getSocket from "./lib/socket";
-
+// import getSocket from "./lib/socket";
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
 
@@ -61,16 +60,16 @@ function App() {
     return <Outlet />;
   };
 
-  useEffect(() => {
-    const socket = getSocket();
-    socket.on("connect", () => {
-      console.log("Connected to socket with id: ", socket.id);
-    });
+  // useEffect(() => {
+  //   const socket = getSocket();
+  //   socket.on("connect", () => {
+  //     console.log("Connected to socket with id: ", socket.id);
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
