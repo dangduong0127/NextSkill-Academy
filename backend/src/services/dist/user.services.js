@@ -36,12 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handleRefreshToken = exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
+exports.handleGetMessage = exports.handleRefreshToken = exports.handleGetUserProfile = exports.handleUpdateUser = exports.handleDeleteUser = exports.handleLogin = exports.handleCreateUser = exports.handleGetAllUser = void 0;
 var models_1 = require("../models");
 var bcrypt_1 = require("bcrypt");
 var jsonwebtoken_1 = require("jsonwebtoken");
 var ms_1 = require("ms");
 var http_status_codes_1 = require("http-status-codes");
+var mongoose_1 = require("mongoose");
 var saltRounds = 10;
 var handleGetAllUser = function () { return __awaiter(void 0, void 0, void 0, function () {
     var users, err_1;
@@ -125,27 +126,29 @@ var handleCreateUser = function (data) { return __awaiter(void 0, void 0, void 0
 exports.handleCreateUser = handleCreateUser;
 var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, function () {
     var user, comparePass, userInfo, access_token, refresh_token, err_3;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
-                _c.trys.push([0, 5, , 6]);
+                _d.trys.push([0, 5, , 6]);
                 if (!data.email)
                     throw { status: 201, message: "Email is required" };
                 if (!data.password)
                     throw { status: 201, message: "Password is required" };
-                return [4 /*yield*/, models_1.UserModel.findOne({ email: data.email })];
+                return [4 /*yield*/, models_1.UserModel.findOne({ email: data.email })
+                        .populate("role")
+                        .exec()];
             case 1:
-                user = _c.sent();
+                user = _d.sent();
                 if (!user) return [3 /*break*/, 3];
                 return [4 /*yield*/, bcrypt_1["default"].compare(data.password, user.password)];
             case 2:
-                comparePass = _c.sent();
+                comparePass = _d.sent();
                 if (comparePass) {
                     userInfo = {
                         id: user._id,
                         email: user.email,
-                        role: user.role
+                        role: (_a = user.role) === null || _a === void 0 ? void 0 : _a.name
                     };
                     access_token = jsonwebtoken_1["default"].sign(userInfo, process.env.JWT_ACCESS_TOKEN_SECRET, {
                         algorithm: "HS256",
@@ -175,10 +178,10 @@ var handleLogin = function (data) { return __awaiter(void 0, void 0, void 0, fun
                 }];
             case 4: return [3 /*break*/, 6];
             case 5:
-                err_3 = _c.sent();
+                err_3 = _d.sent();
                 return [2 /*return*/, {
-                        status: (_a = err_3.status) !== null && _a !== void 0 ? _a : 500,
-                        message: (_b = err_3.message) !== null && _b !== void 0 ? _b : "Internal server error"
+                        status: (_b = err_3.status) !== null && _b !== void 0 ? _b : 500,
+                        message: (_c = err_3.message) !== null && _c !== void 0 ? _c : "Internal server error"
                     }];
             case 6: return [2 /*return*/];
         }
@@ -263,7 +266,7 @@ var handleGetUserProfile = function (userId) { return __awaiter(void 0, void 0, 
                 _c.trys.push([0, 2, , 3]);
                 if (!userId)
                     throw new Error("missing required field: userId");
-                return [4 /*yield*/, models_1.UserModel.findById(userId).select("-password -__v")];
+                return [4 /*yield*/, models_1.UserModel.findById(userId).select("-password -__v -receiver")];
             case 1:
                 user = _c.sent();
                 if (user) {
@@ -331,3 +334,40 @@ var handleRefreshToken = function (refreshToken) { return __awaiter(void 0, void
     });
 }); };
 exports.handleRefreshToken = handleRefreshToken;
+var handleGetMessage = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+    var messData, err_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, models_1.MessageModel.find({
+                        sender: new mongoose_1["default"].Types.ObjectId(userId)
+                    }).select("-__v -_id")];
+            case 1:
+                messData = _a.sent();
+                if (messData) {
+                    return [2 /*return*/, {
+                            status: http_status_codes_1.StatusCodes.OK,
+                            message: "User profile retrieved successfully",
+                            mess: messData
+                        }];
+                }
+                else {
+                    return [2 /*return*/, {
+                            status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                            message: "User not found",
+                            mess: null
+                        }];
+                }
+                return [3 /*break*/, 3];
+            case 2:
+                err_7 = _a.sent();
+                return [2 /*return*/, {
+                        status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                        message: "Internal server error"
+                    }];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.handleGetMessage = handleGetMessage;

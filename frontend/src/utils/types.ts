@@ -21,3 +21,9 @@ export interface IUser {
   phone: number;
   address: string;
 }
+
+export interface Message {
+  sender: string;
+  message: string;
+  timestamp?: string;
+}

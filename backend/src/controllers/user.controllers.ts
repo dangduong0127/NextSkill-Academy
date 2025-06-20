@@ -7,6 +7,7 @@ import {
   handleUpdateUser,
   handleGetUserProfile,
   handleRefreshToken,
+  handleGetMessage,
 } from "../services/user.services";
 import { JwtPayload } from "jsonwebtoken";
 import ms from "ms";
@@ -153,6 +154,20 @@ const refreshTokenController = async (req: Request, res: Response) => {
   }
 };
 
+const getMessageController = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new Error("User ID is required");
+
+    const response = await handleGetMessage(userId);
+    res.status(200).json({ messData: response });
+  } catch (err) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal server error" });
+  }
+};
+
 export {
   getAllUsers,
   createUser,
@@ -163,4 +178,5 @@ export {
   getUserController,
   logoutController,
   refreshTokenController,
+  getMessageController,
 };

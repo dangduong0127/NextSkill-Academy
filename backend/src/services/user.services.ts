@@ -1,9 +1,10 @@
-import { UserModel } from "../models";
+import { UserModel, MessageModel } from "../models";
 import { IUser } from "../interfaces";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import ms from "ms";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -72,7 +73,9 @@ const handleLogin = async (data: IUser) => {
   try {
     if (!data.email) throw { status: 201, message: "Email is required" };
     if (!data.password) throw { status: 201, message: "Password is required" };
-    const user = await UserModel.findOne({ email: data.email });
+    const user = await UserModel.findOne({ email: data.email })
+      .populate<{ role: { name: string } }>("role")
+      .exec();
     if (user) {
       const comparePass = await bcrypt.compare(data.password, user.password);
       if (comparePass) {
@@ -82,7 +85,7 @@ const handleLogin = async (data: IUser) => {
         const userInfo = {
           id: user._id,
           email: user.email,
-          role: user.role,
+          role: user.role?.name,
         };
 
         const access_token = jwt.sign(
@@ -176,7 +179,9 @@ const handleUpdateUser = async (userId: string, data: IUser) => {
 const handleGetUserProfile = async (userId: string) => {
   try {
     if (!userId) throw new Error("missing required field: userId");
-    const user = await UserModel.findById(userId).select("-password -__v");
+    const user = await UserModel.findById(userId).select(
+      "-password -__v -receiver"
+    );
     if (user) {
       return {
         status: 200,
@@ -240,6 +245,32 @@ const handleRefreshToken = async (refreshToken: string) => {
   }
 };
 
+const handleGetMessage = async (userId: string) => {
+  try {
+    const messData = await MessageModel.find({
+      sender: new mongoose.Types.ObjectId(userId),
+    }).select("-__v -_id");
+
+    if (messData) {
+      return {
+        status: StatusCodes.OK,
+        message: "User profile retrieved successfully",
+        mess: messData,
+      };
+    } else {
+      return {
+        status: StatusCodes.NOT_FOUND,
+        message: "User not found",
+        mess: null,
+      };
+    }
+  } catch (err) {
+    return {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: "Internal server error",
+    };
+  }
+};
 export {
   handleGetAllUser,
   handleCreateUser,
@@ -248,4 +279,5 @@ export {
   handleUpdateUser,
   handleGetUserProfile,
   handleRefreshToken,
+  handleGetMessage,
 };

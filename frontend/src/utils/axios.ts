@@ -41,6 +41,11 @@ const refreshToken = () => {
   return axios.put(API_URL);
 };
 
+const getMessage = (userId: string) => {
+  const API_URL = `/getMessage/${userId}`;
+  return axios.get(API_URL);
+};
+
 export {
   getAllUsers,
   register,
@@ -50,4 +55,5 @@ export {
   checkAuth,
   logout,
   refreshToken,
+  getMessage,
 };

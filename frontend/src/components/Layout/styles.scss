@@ -3,3 +3,26 @@
   margin-top: 100px;
   min-height: 80vh;
 }
+
+.btn-chat {
+  position: fixed;
+  bottom: 120px;
+  right: 40px;
+  z-index: 9999999999;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  background-color: rgb(25, 118, 210);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-chat:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-chat:active {
+  transform: scale(0.95);
+}

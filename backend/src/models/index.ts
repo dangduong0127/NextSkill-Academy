@@ -1,3 +1,5 @@
 import UserModel from "./user";
 import RoleModel from "./role";
-export { UserModel, RoleModel };
+import MessageModel from "./message";
+
+export { UserModel, RoleModel, MessageModel };
