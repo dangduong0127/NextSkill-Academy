@@ -1,10 +1,10 @@
 import mongoose, { Document } from "mongoose";
 
 interface IMessage extends Document {
+  room: mongoose.Types.ObjectId;
   sender: mongoose.Types.ObjectId;
-  receiver: mongoose.Types.ObjectId | null;
-  message: string;
-  timestamp: Date;
+  content: string;
+  createdAt: Date;
 }
 
 export default IMessage;

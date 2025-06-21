@@ -3,21 +3,21 @@ import { IMessage } from "../interfaces";
 
 const MessageSchema = new Schema<IMessage>(
   {
+    room: {
+      type: Schema.Types.ObjectId,
+      ref: "Room",
+      required: true,
+    },
     sender: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    receiver: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: false,
-    },
-    message: {
+    content: {
       type: String,
       required: true,
     },
-    timestamp: {
+    createdAt: {
       type: Date,
       default: Date.now,
     },

@@ -156,7 +156,7 @@ const refreshTokenController = async (req: Request, res: Response) => {
 
 const getMessageController = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req.user as unknown as CustomJwtPayload)?.id;
     if (!userId) throw new Error("User ID is required");
 
     const response = await handleGetMessage(userId);

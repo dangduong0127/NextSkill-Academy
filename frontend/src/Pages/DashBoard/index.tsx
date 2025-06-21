@@ -14,7 +14,9 @@ import {
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { Link, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
 interface MenuItem {
@@ -22,13 +24,19 @@ interface MenuItem {
   icon: React.ReactNode;
   link: string;
 }
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+// props { children }: { children: React.ReactNode }
+const DashboardLayout = () => {
   const location = useLocation();
   const menuItems: MenuItem[] = [
     {
       text: "Dashboard",
       icon: <DashboardIcon />,
       link: "/dashboard",
+    },
+    {
+      text: "Chat",
+      icon: <ChatBubbleIcon />,
+      link: "/dashboard/chat",
     },
     {
       text: "Settings",
@@ -85,11 +93,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           flexGrow: 1,
           bgcolor: "background.default",
           p: 3,
-          ml: `${drawerWidth}px`,
+          // ml: `${drawerWidth}px`,
         }}
       >
         <Toolbar />
-        {children}
+        {/* {children} */}
+        <Outlet />
       </Box>
     </Box>
   );

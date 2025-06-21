@@ -22,6 +22,7 @@ import "./global.scss";
 import UserProfile from "./Pages/UserProfile";
 import { NotifierProvider } from "./components/Notifier/messageContext";
 import DashboardLayout from "./Pages/DashBoard";
+import Chat from "./Pages/DashBoard/Chat";
 // import getSocket from "./lib/socket";
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -138,14 +139,11 @@ function App() {
                     </Layout>
                   }
                 />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <DashboardLayout>
-                      <h1>News</h1>
-                    </DashboardLayout>
-                  }
-                />
+                <Route path="/dashboard" element={<DashboardLayout />}>
+                  <Route index element={<div>Dashboard Home</div>} />
+                  <Route path="chat" element={<Chat />} />
+                  <Route path="settings" element={<div>Settings</div>} />
+                </Route>
               </Route>
 
               <Route
