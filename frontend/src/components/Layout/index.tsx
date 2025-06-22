@@ -29,7 +29,7 @@ const Layout = ({ children }: Props) => {
       <Header />
       <div className="main">{children}</div>
       {userInfo && userInfo.role === "admin" ? (
-        <Link className="btn-chat" to="dashboard/chat">
+        <Link className="btn-chat" to="/dashboard/chat">
           <ChatBubbleIcon />
         </Link>
       ) : (

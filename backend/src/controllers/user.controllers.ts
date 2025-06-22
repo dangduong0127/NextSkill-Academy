@@ -54,7 +54,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production" ? false : true,
         sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-        maxAge: ms("1 day"),
+        maxAge: ms("1d"),
       });
 
       res.status(200).json({
@@ -68,6 +68,29 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
   } catch (err) {
     console.log("Error", err);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const refreshTokenController = async (req: Request, res: Response) => {
+  try {
+    const refresh_token = req.cookies?.refreshToken;
+    const response = await handleRefreshToken(refresh_token);
+
+    if (response?.status === StatusCodes.OK) {
+      res.cookie("accessToken", response.createNewAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production" ? false : true,
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+        maxAge: ms("1h"),
+      });
+    }
+
+    res.status(StatusCodes.OK).json({
+      message: "Refresh token successful",
+      userInfo: response?.user,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -129,29 +152,6 @@ const logoutController = async (req: Request, res: Response) => {
   res.clearCookie("refreshToken");
 
   res.status(200).json({ message: "Logout successful" });
-};
-
-const refreshTokenController = async (req: Request, res: Response) => {
-  try {
-    const refresh_token = req.cookies?.refreshToken;
-    const response = await handleRefreshToken(refresh_token);
-
-    if (response?.status === StatusCodes.OK) {
-      res.cookie("accessToken", response.createNewAccessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? false : true,
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-        maxAge: ms("1h"),
-      });
-    }
-
-    res.status(StatusCodes.OK).json({
-      message: "Refresh token successful",
-      userInfo: response?.user,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
-  }
 };
 
 const getMessageController = async (req: Request, res: Response) => {

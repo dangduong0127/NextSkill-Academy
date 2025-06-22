@@ -29,9 +29,10 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     console.log(message);
     if (message.trim() !== "") {
       socket.emit("send_message", {
+        room: userId,
         sender: userId,
-        message,
-        timestamp: Date.now(),
+        content: message,
+        createdAt: Date.now(),
       });
       setMessage("");
     }
@@ -44,7 +45,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
 
   const fetchMessages = async () => {
     try {
-      const res = await getMessage(userId);
+      const res = await getMessage();
       setChatList(res.data.messData.mess);
     } catch (err) {
       console.log(err);
@@ -58,6 +59,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     });
 
     socket.on("receive_message", (data) => {
+      console.log("tin nhắn từ admin:", data);
       setChatList((prev) => {
         return [...prev, data];
       });
@@ -112,9 +114,9 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
                 className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
                 key={index}
               >
-                <div className="message-bubble">{item.message}</div>
+                <div className="message-bubble">{item.content}</div>
                 <div className="message-time">
-                  {dayjs(item.timestamp).format("HH:mm DD/MM/YYYY")}
+                  {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
                 </div>
               </div>
             );

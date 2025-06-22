@@ -41,8 +41,13 @@ const refreshToken = () => {
   return axios.put(API_URL);
 };
 
-const getMessage = (userId: string) => {
-  const API_URL = `/getMessage/${userId}`;
+const getMessage = () => {
+  const API_URL = `/getMessage`;
+  return axios.get(API_URL);
+};
+
+const getUserMessage = (userId: string) => {
+  const API_URL = `/dashboard/chat/getMessage/${userId}`;
   return axios.get(API_URL);
 };
 
@@ -56,4 +61,5 @@ export {
   logout,
   refreshToken,
   getMessage,
+  getUserMessage,
 };

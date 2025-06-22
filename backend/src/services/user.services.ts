@@ -131,6 +131,49 @@ const handleLogin = async (data: IUser) => {
     };
   }
 };
+
+const handleRefreshToken = async (refreshToken: string) => {
+  try {
+    if (refreshToken) {
+      const refreshTokenDecoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_TOKEN_SECRET
+      );
+      if (typeof refreshTokenDecoded === "string") {
+        throw new Error("Invalid refresh token format");
+      }
+      if (!refreshTokenDecoded || !refreshTokenDecoded.id) {
+        throw new Error("Invalid refresh token");
+      }
+
+      const createNewAccessToken = jwt.sign(
+        {
+          id: refreshTokenDecoded.id,
+          email: refreshTokenDecoded.email,
+          role: refreshTokenDecoded.role,
+        },
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        { algorithm: "HS256", expiresIn: ms("1h") }
+      );
+
+      return {
+        status: StatusCodes.OK,
+        createNewAccessToken,
+        user: {
+          id: refreshTokenDecoded.id,
+          email: refreshTokenDecoded.email,
+          role: refreshTokenDecoded.role,
+        },
+      };
+    }
+  } catch (err: any) {
+    return {
+      status: err.status ?? 500,
+      message: err.message ?? "Internal server error",
+    };
+  }
+};
+
 const handleDeleteUser = async (userId: string) => {
   try {
     if (!userId) throw { status: 201, message: "User ID is required" };
@@ -203,52 +246,10 @@ const handleGetUserProfile = async (userId: string) => {
   }
 };
 
-const handleRefreshToken = async (refreshToken: string) => {
-  try {
-    if (refreshToken) {
-      const refreshTokenDecoded = jwt.verify(
-        refreshToken,
-        process.env.JWT_REFRESH_TOKEN_SECRET
-      );
-      if (typeof refreshTokenDecoded === "string") {
-        throw new Error("Invalid refresh token format");
-      }
-      if (!refreshTokenDecoded || !refreshTokenDecoded.id) {
-        throw new Error("Invalid refresh token");
-      }
-
-      const createNewAccessToken = jwt.sign(
-        {
-          id: refreshTokenDecoded.id,
-          email: refreshTokenDecoded.email,
-          role: refreshTokenDecoded.role,
-        },
-        process.env.JWT_ACCESS_TOKEN_SECRET,
-        { algorithm: "HS256", expiresIn: ms("1h") }
-      );
-
-      return {
-        status: StatusCodes.OK,
-        createNewAccessToken,
-        user: {
-          id: refreshTokenDecoded.id,
-          email: refreshTokenDecoded.email,
-          role: refreshTokenDecoded.role,
-        },
-      };
-    }
-  } catch (err: any) {
-    return {
-      status: err.status ?? 500,
-      message: err.message ?? "Internal server error",
-    };
-  }
-};
-
 const handleGetMessage = async (userId: string) => {
   try {
     const messData = await MessageModel.find({
-      sender: new mongoose.Types.ObjectId(userId),
+      room: new mongoose.Types.ObjectId(userId),
     }).select("-__v -_id");
 
     if (messData) {

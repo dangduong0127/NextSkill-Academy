@@ -14,32 +14,14 @@ import { Send } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import { io, Socket } from "socket.io-client";
 import { getAllUsers } from "../../../utils/axios";
-import type { IUser } from "../../../utils/types";
-type Message = {
-  key: [{ from: string; text: string }];
-};
+import type { IUser, Message } from "../../../utils/types";
+import { getUserMessage } from "../../../utils/axios";
 
-// const users = [
-//   { id: 1, name: "Alice", avatar: "A" },
-//   { id: 2, name: "Bob", avatar: "B" },
-// ];
-
-const dummyMessages = {
-  1: [
-    { from: "me", text: "Hi Alice!" },
-    { from: "Alice", text: "Hello! How are you?" },
-  ],
-  2: [
-    { from: "me", text: "Hey Bob!" },
-    { from: "Bob", text: "Yo! What's up?" },
-  ],
-};
 let socket: Socket;
 const Chat = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState<Message[]>([]);
-  const [messages, setMessages] = useState<Message>(dummyMessages);
   const [users, setUsers] = useState<IUser[]>([]);
   const [userId, setUserId] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -53,13 +35,17 @@ const Chat = () => {
       createdAt: Date.now(),
     });
 
-    setMessages((prev) => ({
-      ...prev,
-      [selectedUserId]: [
-        ...(prev[selectedUserId] || []),
-        { from: "me", text: message },
-      ],
-    }));
+    setChatList((prev: Message[]) => {
+      return [
+        ...prev,
+        {
+          room: selectedUserId,
+          sender: userId,
+          content: message,
+          createdAt: Date.now(),
+        },
+      ];
+    });
 
     setMessage("");
   };
@@ -70,19 +56,30 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    if (selectedUserId) {
+      socket.emit("join-room", `room:${selectedUserId}`);
+    }
+
+    getUserMessage(selectedUserId)
+      .then((res) => {
+        setChatList(res.data?.chat?.messData);
+      })
+      .catch((err) => console.log(err));
+  }, [selectedUserId]);
+
+  useEffect(() => {
     setUserId(userInfo.id);
   }, [userInfo.id]);
 
   useEffect(() => {
-    // fetchMessages();
     fetchUsers();
-    console.log("component mounted");
 
     socket = io("http://localhost:3003", {
       withCredentials: true,
     });
 
     socket.on("receive_message", (data) => {
+      console.log("Tin nhắn từ user: ", data);
       setChatList((prev) => {
         return [...prev, data];
       });
@@ -141,21 +138,21 @@ const Chat = () => {
         </Typography>
         <Divider />
         <Box flex={1} overflow="auto" my={2}>
-          {(messages[selectedUserId] || []).map((msg, index) => (
+          {(chatList || []).map((msg, index) => (
             <Box
               key={index}
               display="flex"
-              justifyContent={msg.from === "me" ? "flex-end" : "flex-start"}
+              justifyContent={msg.sender === userId ? "flex-end" : "flex-start"}
               mb={1}
             >
               <Paper
                 sx={{
                   p: 1.5,
                   maxWidth: "70%",
-                  bgcolor: msg.from === "me" ? "#DCF8C6" : "#FFF",
+                  bgcolor: msg.sender !== userId ? "#DCF8C6" : "#FFF",
                 }}
               >
-                <Typography variant="body1">{msg.text}</Typography>
+                <Typography variant="body1">{msg.content}</Typography>
               </Paper>
             </Box>
           ))}
@@ -171,6 +168,7 @@ const Chat = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSendMessage();
             }}
+            sx={{ backgroundColor: "#fff", borderRadius: "5px" }}
           />
           <IconButton onClick={handleSendMessage} color="primary">
             <Send />

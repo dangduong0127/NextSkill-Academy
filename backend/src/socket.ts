@@ -122,29 +122,34 @@ const initSocket = (server: any) => {
       // socket.emit("room-messages", messages);
     });
 
-    socket.on("send_message", async (socket) => {
-      const { content, toUserId } = socket;
-      console.log("Tin nhắn: ", socket);
+    socket.on("send_message", async (payload) => {
+      const { content, room } = payload;
+      console.log("Tin nhắn: ", room);
 
-      let room = await RoomModel.findOne({
-        user: toUserId,
+      let check_room = await RoomModel.findOne({
+        user: room,
       });
-      if (!room) room = await RoomModel.create({ user: toUserId });
+      if (!room) check_room = await RoomModel.create({ user: room });
 
       const message = await MessageModel.create({
-        room: room._id,
+        room: room,
         sender: id,
         content,
         createdAt: new Date(),
       });
-
-      io.to(`room:${toUserId}`).emit("receive_message", {
+      console.log("message promise:", message);
+      io.to(`room:${room}`).emit("receive_message", {
         _id: message._id,
         content: message.content,
         sender: id,
         createdAt: message.createdAt,
       });
     });
+
+    if (role === "user") {
+      const roomId = `room:${id}`;
+      socket.join(roomId);
+    }
 
     socket.on("disconnect", () => {
       console.log(`[DISCONNECTED] ${role} ${id}`);

@@ -26,7 +26,8 @@ export interface IUser {
 export type userInfo = Pick<IUser, "_id" | "email" | "role">;
 
 export interface Message {
+  room: string;
   sender: string;
-  message: string;
-  timestamp?: string;
+  content: string;
+  createdAt?: number;
 }
