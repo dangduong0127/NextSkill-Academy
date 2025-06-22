@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import {
   Box,
   List,
@@ -18,6 +19,7 @@ import type { IUser, Message } from "../../../utils/types";
 import { getUserMessage } from "../../../utils/axios";
 
 let socket: Socket;
+
 const Chat = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [message, setMessage] = useState("");
@@ -25,6 +27,7 @@ const Chat = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [userId, setUserId] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -35,18 +38,6 @@ const Chat = () => {
       createdAt: Date.now(),
     });
 
-    setChatList((prev: Message[]) => {
-      return [
-        ...prev,
-        {
-          room: selectedUserId,
-          sender: userId,
-          content: message,
-          createdAt: Date.now(),
-        },
-      ];
-    });
-
     setMessage("");
   };
 
@@ -54,6 +45,10 @@ const Chat = () => {
     const res = await getAllUsers();
     setUsers(res.data);
   };
+
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatList]);
 
   useEffect(() => {
     if (selectedUserId) {
@@ -156,6 +151,8 @@ const Chat = () => {
               </Paper>
             </Box>
           ))}
+
+          <div ref={endOfMessagesRef} />
         </Box>
         <Divider />
         <Box display="flex" alignItems="center" mt={1}>

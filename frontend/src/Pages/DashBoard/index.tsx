@@ -55,7 +55,9 @@ const DashboardLayout = () => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap>
-            My Dashboard
+            <Link to={"/"} style={{ color: "#fff", textDecoration: "none" }}>
+              My Dashboard
+            </Link>
           </Typography>
         </Toolbar>
       </AppBar>

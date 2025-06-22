@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import type { Message } from "../../utils/types";
 import "./styles.scss";
@@ -20,6 +20,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   const [userId, setUserId] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const emojis = ["😊", "😂", "❤️", "👍", "🎉", "😍", "🤔", "😎", "🙏", "✨"];
+  const endOfMessageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setUserId(userInfo.id);
@@ -51,6 +52,10 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    endOfMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatList]);
 
   useEffect(() => {
     fetchMessages();
@@ -110,15 +115,18 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
           chatList.map((item, index) => {
             const isSentByCurrentUser = item.sender === userId;
             return (
-              <div
-                className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
-                key={index}
-              >
-                <div className="message-bubble">{item.content}</div>
-                <div className="message-time">
-                  {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
+              <>
+                <div
+                  className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
+                  key={index}
+                >
+                  <div className="message-bubble">{item.content}</div>
+                  <div className="message-time">
+                    {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
+                  </div>
                 </div>
-              </div>
+                <div ref={endOfMessageRef} />
+              </>
             );
           })}
       </div>
