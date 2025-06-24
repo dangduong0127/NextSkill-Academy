@@ -41,7 +41,7 @@ const UserProfile = () => {
               onClick={() => setActiveTab("overview")}
             >
               <img
-                src="http://localhost:3003/src/uploads/element-4.svg"
+                src={`${import.meta.env.VITE_API_URL}/src/uploads/element-4.svg`}
                 alt=""
               />
             </div>
@@ -51,7 +51,7 @@ const UserProfile = () => {
               onClick={() => setActiveTab("users")}
             >
               <img
-                src="http://localhost:3003/src/uploads/element-4.svg"
+                src={`${import.meta.env.VITE_API_URL}/src/uploads/element-4.svg`}
                 alt=""
               />
             </div>
@@ -61,7 +61,7 @@ const UserProfile = () => {
               onClick={() => setActiveTab("setting")}
             >
               <img
-                src="http://localhost:3003/src/uploads/element-4.svg"
+                src={`${import.meta.env.VITE_API_URL}/src/uploads/element-4.svg`}
                 alt=""
               />
             </div>
@@ -71,7 +71,7 @@ const UserProfile = () => {
               onClick={() => setActiveTab("logout")}
             >
               <img
-                src="http://localhost:3003/src/uploads/element-4.svg"
+                src={`${import.meta.env.VITE_API_URL}/src/uploads/element-4.svg`}
                 alt=""
               />
             </div>

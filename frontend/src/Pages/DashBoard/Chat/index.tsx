@@ -69,7 +69,7 @@ const Chat = () => {
   useEffect(() => {
     fetchUsers();
 
-    socket = io("http://localhost:3003", {
+    socket = io(import.meta.env.VITE_API_URL, {
       withCredentials: true,
     });
 

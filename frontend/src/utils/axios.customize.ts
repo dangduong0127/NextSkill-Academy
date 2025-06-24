@@ -7,7 +7,7 @@ import axios, {
 import { logout, refreshToken } from "./axios";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3003/api/v1",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
   withCredentials: true,
   timeout: 1000 * 60 * 10,
 });

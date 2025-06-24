@@ -4,7 +4,7 @@ let socket: Socket | null = null;
 
 const getSocket = () => {
   if (!socket) {
-    socket = io("http://localhost:3003", {
+    socket = io(import.meta.env.VITE_API_URL, {
       withCredentials: true,
       reconnection: true, // mặc định: true
       reconnectionAttempts: 5, // số lần thử lại

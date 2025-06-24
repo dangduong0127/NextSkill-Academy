@@ -58,7 +58,7 @@ const Header = () => {
                   height: "80px",
                   objectFit: "contain",
                 }}
-                src="http://localhost:3003/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg"
+                src={`${import.meta.env.VITE_API_URL}/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg`}
                 alt="Logo"
               />
             </Box>

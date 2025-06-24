@@ -59,7 +59,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
 
   useEffect(() => {
     fetchMessages();
-    socket = io("http://localhost:3003", {
+    socket = io(import.meta.env.VITE_API_URL, {
       withCredentials: true,
     });
 
@@ -82,7 +82,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     <div className={`chat-container }`}>
       <div className="chat-header">
         <Avatar
-          src="http://localhost:3003/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg"
+        src={`${import.meta.env.VITE_API_URL}/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg`}
           sx={{ width: "50px", height: "50px" }}
         />
         <div className="chat-header-info">
