@@ -10,7 +10,7 @@ import {
   handleGetMessage,
 } from "../services/user.services";
 import { JwtPayload } from "jsonwebtoken";
-import ms from "ms";
+// import ms from "ms";
 import { StatusCodes } from "http-status-codes";
 
 interface CustomJwtPayload extends JwtPayload {
@@ -49,7 +49,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
         // sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
         secure: true,
         sameSite: "none",
-        maxAge: ms("1h"),
+        maxAge: 3600000,
       });
 
       res.cookie("refreshToken", response.refreshToken, {
@@ -58,7 +58,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
         // sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
         secure: true,
         sameSite: "none",
-        maxAge: ms("1d"),
+        maxAge: 86400000,
       });
 
       res.status(200).json({
@@ -87,7 +87,7 @@ const refreshTokenController = async (req: Request, res: Response) => {
         sameSite: "none",
         // secure: process.env.NODE_ENV === "production" ? false : true,
         // sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-        maxAge: ms("1h"),
+        maxAge: 3600000,
       });
     }
 
