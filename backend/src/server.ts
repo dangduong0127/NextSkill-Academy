@@ -7,6 +7,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import initSocket from "./socket";
+import fs from "fs";
 
 dotenv.config();
 const app = express();
@@ -40,6 +41,11 @@ app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads")) // vì sau build sẽ thành dist/uploads
 );
+
+app.get("/debug-files", (_req, res) => {
+  const files = fs.readdirSync(path.join(__dirname, "uploads"));
+  res.json({ files });
+});
 
 app.use(router);
 

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: nextskill-academy
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    staticPublishPath: dist/uploads
+    envVars:
+      - key: NODE_ENV
+        value: production
