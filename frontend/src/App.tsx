@@ -50,6 +50,13 @@ function App() {
   };
 
   const ProtectedRoute = () => {
+    const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    if (!user && user?.role !== "admin")
+      return <Navigate to="/login" replace={true} />;
+    return <Outlet />;
+  };
+
+  const ProtectedRouteAuth = () => {
     const user = localStorage.getItem("userInfo");
     if (!user) return <Navigate to="/login" replace={true} />;
     return <Outlet />;
@@ -130,7 +137,7 @@ function App() {
                 }
               ></Route>
 
-              <Route element={<ProtectedRoute />}>
+              <Route element={<ProtectedRouteAuth />}>
                 <Route
                   path="/user/profile"
                   element={
@@ -139,6 +146,8 @@ function App() {
                     </Layout>
                   }
                 />
+              </Route>
+              <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<DashboardLayout />}>
                   <Route index element={<div>Dashboard Home</div>} />
                   <Route path="chat" element={<Chat />} />

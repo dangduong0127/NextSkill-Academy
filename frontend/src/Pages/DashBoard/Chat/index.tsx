@@ -113,7 +113,14 @@ const Chat = () => {
                   borderRadius: 10,
                 }}
               >
-                <Avatar sx={{ mr: 2 }} src={user.avatar || ""} />
+                <Avatar
+                  sx={{ mr: 2 }}
+                  src={
+                    import.meta.env.VITE_API_URL +
+                      "/src/uploads/" +
+                      user.avatar || ""
+                  }
+                />
                 <ListItemText primary={user.name} />
               </ListItem>
             ))}{" "}

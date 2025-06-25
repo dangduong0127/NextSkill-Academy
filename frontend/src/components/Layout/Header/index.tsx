@@ -222,7 +222,10 @@ const Header = () => {
                   aria-haspopup="true"
                   aria-expanded={anchorActions ? "true" : undefined}
                 >
-                  <Avatar alt="User" src={auth?.user?.avatar} />
+                  <Avatar
+                    alt="User"
+                    src={`${import.meta.env.VITE_API_URL}/src/uploads/${auth?.user?.avatar}`}
+                  />
                 </IconButton>
 
                 <Menu
@@ -240,13 +243,18 @@ const Header = () => {
                       padding: "8px 16px",
                     }}
                   >
-                    <Button
-                      component={Link}
-                      to="/dashboard"
-                      variant="contained"
-                    >
-                      Dashboard
-                    </Button>
+                    {auth?.user?.role === "admin" ? (
+                      <Button
+                        component={Link}
+                        to="/dashboard"
+                        variant="contained"
+                      >
+                        Dashboard
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+
                     <Button
                       component={Link}
                       to="/user/profile"

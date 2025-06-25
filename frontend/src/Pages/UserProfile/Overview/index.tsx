@@ -22,7 +22,7 @@ const Overview = ({ data }: IOverviewProps) => {
         <div className="header-form">
           <div className="header-form-left">
             <Avatar
-              src={data?.avatar}
+              src={`${import.meta.env.VITE_API_URL}/src/uploads/${data?.avatar}`}
               alt="avatar"
               sx={{ width: "100px", height: "100px" }}
             />

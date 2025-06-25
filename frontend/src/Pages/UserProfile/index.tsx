@@ -125,7 +125,13 @@ const UserProfile = () => {
 
               <Avatar
                 className="avatar-user"
-                src={auth.isAuthenticated === true ? auth.user?.avatar : ""}
+                src={
+                  auth.isAuthenticated === true
+                    ? import.meta.env.VITE_API_URL +
+                      "/src/uploads/" +
+                      auth.user?.avatar
+                    : ""
+                }
                 sx={{
                   borderRadius: "10px",
                   border: "1px solid #ccc",
