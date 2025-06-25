@@ -34,7 +34,12 @@ app.use(
 );
 connectDB();
 
-app.use("/src/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/src/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads")) // vì sau build sẽ thành dist/uploads
+);
 
 app.use(router);
 

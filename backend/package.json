@@ -4,7 +4,7 @@
   "main": "server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "tsc && cp -r src/uploads dist/uploads",
     "start": "node dist/server.js"
   },
   "keywords": [],
