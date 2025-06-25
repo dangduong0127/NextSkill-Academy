@@ -45,15 +45,19 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
     if (response.status === 200) {
       res.cookie("accessToken", response.accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development" ? false : true,
-        sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+        // secure: process.env.NODE_ENV === "development" ? false : true,
+        // sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+        secure: true,
+        sameSite: "none",
         maxAge: ms("1h"),
       });
 
       res.cookie("refreshToken", response.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "development" ? false : true,
-        sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+        // secure: process.env.NODE_ENV === "development" ? false : true,
+        // sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
+        secure: true,
+        sameSite: "none",
         maxAge: ms("1d"),
       });
 
@@ -79,8 +83,10 @@ const refreshTokenController = async (req: Request, res: Response) => {
     if (response?.status === StatusCodes.OK) {
       res.cookie("accessToken", response.createNewAccessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production" ? false : true,
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+        secure: true,
+        sameSite: "none",
+        // secure: process.env.NODE_ENV === "production" ? false : true,
+        // sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
         maxAge: ms("1h"),
       });
     }
