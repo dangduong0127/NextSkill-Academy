@@ -15,8 +15,11 @@ import { Send } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import { io, Socket } from "socket.io-client";
 import { getAllUsers } from "../../../utils/axios";
-import type { IUser, Message } from "../../../utils/types";
+import type { IUser, Message, EmojiObject } from "../../../utils/types";
 import { getUserMessage } from "../../../utils/axios";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import "./styles.scss";
 
 let socket: Socket;
 
@@ -28,6 +31,11 @@ const Chat = () => {
   const [userId, setUserId] = useState("");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleEmojiSelect = (emoji: EmojiObject) => {
+    setMessage((prev) => prev + emoji.native);
+  };
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -139,7 +147,7 @@ const Chat = () => {
           Chat with {users.find((u) => u._id === selectedUserId)?.name}
         </Typography>
         <Divider />
-        <Box flex={1} overflow="auto" my={2}>
+        <Box flex={1} overflow="auto" my={2} sx={{ position: "relative" }}>
           {(chatList || []).map((msg, index) => (
             <Box
               key={index}
@@ -162,7 +170,27 @@ const Chat = () => {
           <div ref={endOfMessagesRef} />
         </Box>
         <Divider />
-        <Box display="flex" alignItems="center" mt={1}>
+        <Box
+          display="flex"
+          alignItems="center"
+          mt={1}
+          className="box-chat-dashboard"
+        >
+          {showEmojiPicker && (
+            <div className="emoji-picker-wrapper">
+              <Picker
+                data={data}
+                onEmojiSelect={handleEmojiSelect}
+                theme="light"
+              />
+            </div>
+          )}
+          <button
+            className="emoji-button"
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+          >
+            😊
+          </button>
           <TextField
             fullWidth
             size="small"

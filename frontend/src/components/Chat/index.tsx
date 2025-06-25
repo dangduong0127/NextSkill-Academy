@@ -6,9 +6,11 @@ import { Avatar } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import { getMessage } from "../../utils/axios";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import type { EmojiObject } from "../../utils/types";
 
 type ChatProps = {
-  // active: boolean;
   eventOpenChat: () => void;
 };
 
@@ -18,8 +20,8 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState<Message[]>([]);
   const [userId, setUserId] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-  const emojis = ["😊", "😂", "❤️", "👍", "🎉", "😍", "🤔", "😎", "🙏", "✨"];
   const endOfMessageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -27,7 +29,6 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   }, [userInfo.id]);
 
   const sendMessage = () => {
-    console.log(message);
     if (message.trim() !== "") {
       socket.emit("send_message", {
         room: userId,
@@ -39,11 +40,6 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     }
   };
 
-  function addEmoji() {
-    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-    setMessage((prev) => prev + randomEmoji);
-  }
-
   const fetchMessages = async () => {
     try {
       const res = await getMessage();
@@ -51,6 +47,10 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleEmojiSelect = (emoji: EmojiObject) => {
+    setMessage((prev) => prev + emoji.native);
   };
 
   useEffect(() => {
@@ -64,13 +64,9 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     });
 
     socket.on("receive_message", (data) => {
-      console.log("tin nhắn từ admin:", data);
-      setChatList((prev) => {
-        return [...prev, data];
-      });
+      setChatList((prev) => [...prev, data]);
     });
 
-    // Clean up
     return () => {
       socket.disconnect();
       socket.off("receive_message");
@@ -78,11 +74,12 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   }, []);
 
   const now = dayjs().format("HH:mm DD/MM/YYYY");
+
   return (
-    <div className={`chat-container }`}>
+    <div className="chat-container">
       <div className="chat-header">
         <Avatar
-        src={`${import.meta.env.VITE_API_URL}/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg`}
+          src={`${import.meta.env.VITE_API_URL}/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg`}
           sx={{ width: "50px", height: "50px" }}
         />
         <div className="chat-header-info">
@@ -93,7 +90,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
           </div>
         </div>
         <CancelIcon
-          onClick={() => eventOpenChat()}
+          onClick={eventOpenChat}
           sx={{
             position: "absolute",
             cursor: "pointer",
@@ -103,7 +100,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
         />
       </div>
 
-      <div className="chat-messages" id="chatMessages">
+      <div className="chat-messages">
         <div className="message received">
           <div className="message-bubble">
             Xin chào! Tôi có thể giúp gì cho bạn? 😊
@@ -111,40 +108,50 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
           <div className="message-time">{now}</div>
         </div>
 
-        {chatList &&
-          chatList.map((item, index) => {
-            const isSentByCurrentUser = item.sender === userId;
-            return (
-              <>
-                <div
-                  className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
-                  key={index}
-                >
-                  <div className="message-bubble">{item.content}</div>
-                  <div className="message-time">
-                    {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
-                  </div>
-                </div>
-                <div ref={endOfMessageRef} />
-              </>
-            );
-          })}
+        {chatList.map((item, index) => {
+          const isSentByCurrentUser = item.sender === userId;
+          return (
+            <div
+              key={index}
+              className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
+            >
+              <div className="message-bubble">{item.content}</div>
+              <div className="message-time">
+                {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={endOfMessageRef} />
       </div>
 
-      <div className="typing-indicator" id="typingIndicator">
+      <div className="typing-indicator">
         <span className="typing-dots">Đang nhập...</span>
       </div>
 
       <div className="chat-input">
         <div className="input-container">
-          <button className="emoji-button" onClick={addEmoji}>
+          <button
+            className="emoji-button"
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+          >
             😊
           </button>
+
+          {showEmojiPicker && (
+            <div className="emoji-picker-wrapper">
+              <Picker
+                data={data}
+                onEmojiSelect={handleEmojiSelect}
+                theme="light"
+              />
+            </div>
+          )}
+
           <input
             value={message}
             type="text"
             className="message-input"
-            id="messageInput"
             placeholder="Nhập tin nhắn..."
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
@@ -157,4 +164,5 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     </div>
   );
 };
+
 export default Chat;

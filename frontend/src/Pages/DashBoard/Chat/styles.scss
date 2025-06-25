@@ -1,0 +1,9 @@
+.box-chat-dashboard {
+  position: relative;
+  .emoji-picker-wrapper {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    z-index: 99999999999;
+  }
+}

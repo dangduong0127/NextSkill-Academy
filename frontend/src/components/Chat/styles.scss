@@ -250,3 +250,10 @@
     margin: 20px;
   }
 }
+
+.emoji-picker-wrapper {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  z-index: 1000;
+}

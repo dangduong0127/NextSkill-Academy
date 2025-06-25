@@ -31,3 +31,9 @@ export interface Message {
   content: string;
   createdAt?: number;
 }
+
+export type EmojiObject = {
+  id: string;
+  name: string;
+  native: string;
+};
