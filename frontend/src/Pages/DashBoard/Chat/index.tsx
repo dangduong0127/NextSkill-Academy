@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-
 import {
   Box,
   List,
@@ -14,11 +13,13 @@ import {
 import { Send } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import { io, Socket } from "socket.io-client";
-import { getAllUsers } from "../../../utils/axios";
+import { getAllUsers, uploadImage } from "../../../utils/axios";
 import type { IUser, Message, EmojiObject } from "../../../utils/types";
 import { getUserMessage } from "../../../utils/axios";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import CancelIcon from "@mui/icons-material/Cancel";
 import "./styles.scss";
 
 let socket: Socket;
@@ -32,21 +33,45 @@ const Chat = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleEmojiSelect = (emoji: EmojiObject) => {
     setMessage((prev) => prev + emoji.native);
   };
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
-    socket.emit("send_message", {
-      room: selectedUserId,
-      sender: userId,
-      content: message,
-      createdAt: Date.now(),
-    });
+  const handleSendMessage = async () => {
+    // fetchMessages();
 
-    setMessage("");
+    let uploadedImgFileName: string | null = null;
+
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file_image", file);
+      try {
+        const response = await uploadImage(formData);
+        if (response.data.files) {
+          uploadedImgFileName = response.data.files.file_image[0].newFilename;
+        }
+      } catch (err) {
+        console.log("Upload error: ", err);
+      }
+    }
+
+    if (message.trim() !== "" || uploadedImgFileName) {
+      socket.emit("send_message", {
+        room: selectedUserId,
+        sender: userId,
+        content: message,
+        fileUrl: uploadedImgFileName,
+        fileType: uploadedImgFileName ? "image" : null,
+        createdAt: Date.now(),
+      });
+
+      setMessage("");
+      handleRemovePreview();
+    }
   };
 
   const fetchUsers = async () => {
@@ -94,6 +119,21 @@ const Chat = () => {
       socket.off("receive_message");
     };
   }, []);
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const urlPreview = URL.createObjectURL(file);
+      setPreviewImage(urlPreview);
+    }
+  };
+
+  const handleRemovePreview = () => {
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   return (
     <Box
@@ -162,12 +202,33 @@ const Chat = () => {
                   bgcolor: msg.sender !== userId ? "#DCF8C6" : "#FFF",
                 }}
               >
-                <Typography variant="body1">{msg.content}</Typography>
+                <Typography variant="body1" className="message-body">
+                  {msg.content}
+                  {""}
+                  {msg?.fileUrl && (
+                    <img
+                      src={
+                        import.meta.env.VITE_API_URL +
+                        "/src/uploads/" +
+                        msg.fileUrl
+                      }
+                    />
+                  )}
+                </Typography>
               </Paper>
             </Box>
           ))}
 
           <div ref={endOfMessagesRef} />
+          {previewImage && (
+            <div className="imagePreview">
+              <img src={previewImage || ""} alt="image preview" />
+              <CancelIcon
+                className="btn-del-img"
+                onClick={handleRemovePreview}
+              />
+            </div>
+          )}
         </Box>
         <Divider />
         <Box
@@ -191,6 +252,25 @@ const Chat = () => {
           >
             😊
           </button>
+
+          <div>
+            <input
+              ref={fileInputRef}
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              style={{ display: "none" }}
+              onChange={onFileChange}
+            />
+
+            {/* Label wraps IconButton to trigger file input */}
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </div>
+
           <TextField
             fullWidth
             size="small"

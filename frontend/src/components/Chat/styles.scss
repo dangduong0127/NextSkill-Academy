@@ -118,6 +118,10 @@
   line-height: 1.4;
   word-wrap: break-word;
   position: relative;
+  img {
+    width: 100%;
+    border-radius: 7px;
+  }
 }
 
 .message.sent .message-bubble {
@@ -256,4 +260,25 @@
   bottom: 70px;
   right: 20px;
   z-index: 1000;
+}
+
+.imagePreview {
+  position: absolute;
+  width: 100px;
+  max-height: 150px;
+  bottom: 90px;
+  right: 20px;
+  z-index: 1000;
+  img {
+    width: 100%;
+    border-radius: 10px;
+    height: 100%;
+  }
+  .btn-del-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    cursor: pointer;
+  }
 }

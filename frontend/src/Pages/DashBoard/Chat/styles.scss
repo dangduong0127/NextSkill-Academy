@@ -7,3 +7,12 @@
     z-index: 99999999999;
   }
 }
+
+.message-body {
+  display: flex;
+  flex-direction: column;
+  img {
+    max-width: 300px;
+    border-radius: 10px;
+  }
+}

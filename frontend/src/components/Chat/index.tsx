@@ -5,10 +5,12 @@ import "./styles.scss";
 import { Avatar } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
-import { getMessage } from "../../utils/axios";
+import { getMessage, uploadImage } from "../../utils/axios";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import type { EmojiObject } from "../../utils/types";
+import { IconButton } from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 type ChatProps = {
   eventOpenChat: () => void;
@@ -23,20 +25,43 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const endOfMessageRef = useRef<HTMLDivElement | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setUserId(userInfo.id);
   }, [userInfo.id]);
 
-  const sendMessage = () => {
-    if (message.trim() !== "") {
+  const sendMessage = async () => {
+    fetchMessages();
+
+    let uploadedImgFileName: string | null = null;
+
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file_image", file);
+      try {
+        const response = await uploadImage(formData);
+        if (response.data.files) {
+          uploadedImgFileName = response.data.files.file_image[0].newFilename;
+        }
+      } catch (err) {
+        console.log("Upload error: ", err);
+      }
+    }
+
+    if (message.trim() !== "" || uploadedImgFileName) {
       socket.emit("send_message", {
         room: userId,
         sender: userId,
         content: message,
+        fileUrl: uploadedImgFileName,
+        fileType: uploadedImgFileName ? "image" : null,
         createdAt: Date.now(),
       });
       setMessage("");
+      handleRemovePreview();
     }
   };
 
@@ -74,6 +99,21 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   }, []);
 
   const now = dayjs().format("HH:mm DD/MM/YYYY");
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const urlPreview = URL.createObjectURL(file);
+      setPreviewImage(urlPreview);
+    }
+  };
+
+  const handleRemovePreview = () => {
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   return (
     <div className="chat-container">
@@ -115,7 +155,18 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
               key={index}
               className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
             >
-              <div className="message-bubble">{item.content}</div>
+              <div className="message-bubble">
+                {item.content}{" "}
+                {item?.fileUrl && (
+                  <img
+                    src={
+                      import.meta.env.VITE_API_URL +
+                      "/src/uploads/" +
+                      item.fileUrl
+                    }
+                  />
+                )}
+              </div>
               <div className="message-time">
                 {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
               </div>
@@ -147,6 +198,34 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
               />
             </div>
           )}
+
+          {previewImage && (
+            <div className="imagePreview">
+              <img src={previewImage || ""} alt="image preview" />
+              <CancelIcon
+                className="btn-del-img"
+                onClick={handleRemovePreview}
+              />
+            </div>
+          )}
+
+          <div>
+            <input
+              ref={fileInputRef}
+              accept="image/*"
+              id="icon-button-file"
+              type="file"
+              style={{ display: "none" }}
+              onChange={onFileChange}
+            />
+
+            {/* Label wraps IconButton to trigger file input */}
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </div>
 
           <input
             value={message}

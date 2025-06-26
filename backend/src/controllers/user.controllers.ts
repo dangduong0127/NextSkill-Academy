@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   handleGetAllUser,
   handleCreateUser,
@@ -12,6 +12,8 @@ import {
 import { JwtPayload } from "jsonwebtoken";
 // import ms from "ms";
 import { StatusCodes } from "http-status-codes";
+import formidable from "formidable";
+import fs from "fs";
 
 interface CustomJwtPayload extends JwtPayload {
   id: string;
@@ -174,6 +176,18 @@ const getMessageController = async (req: Request, res: Response) => {
   }
 };
 
+const uploadController = (req: Request, res: Response, next: NextFunction) => {
+  const form = formidable({ uploadDir: "./src/uploads", keepExtensions: true });
+
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.status(StatusCodes.OK).json({ fields, files });
+  });
+};
+
 export {
   getAllUsers,
   createUser,
@@ -185,4 +199,5 @@ export {
   logoutController,
   refreshTokenController,
   getMessageController,
+  uploadController,
 };

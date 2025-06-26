@@ -29,6 +29,8 @@ export interface Message {
   room: string;
   sender: string;
   content: string;
+  fileUrl: string;
+  typeUrl: string;
   createdAt?: number;
 }
 

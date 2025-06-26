@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import ms from "ms";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
+import formidable from "formidable";
 const saltRounds = 10;
 
 const handleGetAllUser = async () => {
@@ -153,7 +154,7 @@ const handleRefreshToken = async (refreshToken: string) => {
           role: refreshTokenDecoded.role,
         },
         process.env.JWT_ACCESS_TOKEN_SECRET,
-        { algorithm: "HS256", expiresIn: "1h" }
+        { algorithm: "HS256", expiresIn: "1d" }
       );
 
       return {

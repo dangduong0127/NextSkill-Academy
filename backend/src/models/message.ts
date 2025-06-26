@@ -15,8 +15,12 @@ const MessageSchema = new Schema<IMessage>(
     },
     content: {
       type: String,
-      required: true,
+      required: false,
     },
+    fileUrl: {
+      type: String,
+    },
+    fileType: { type: String },
     createdAt: {
       type: Date,
       default: Date.now,

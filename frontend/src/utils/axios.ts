@@ -51,6 +51,11 @@ const getUserMessage = (userId: string) => {
   return axios.get(API_URL);
 };
 
+const uploadImage = (formData: FormData) => {
+  const API_URL = `/upload`;
+  return axios.post(API_URL, formData);
+};
+
 export {
   getAllUsers,
   register,
@@ -62,4 +67,5 @@ export {
   refreshToken,
   getMessage,
   getUserMessage,
+  uploadImage,
 };
