@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -17,18 +17,21 @@ import {
 } from "@mui/material";
 import "./styles.scss";
 import { register } from "../../utils/axios";
-import type { IformRegister } from "../../utils/types";
+import type { IformRegister, Province } from "../../utils/types";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState<IformRegister>({
+    fullName: "",
     email: "",
     phone: "",
     gender: "female",
     password: "",
     dateOfBirth: "",
     repeat_password: "",
-    age: "",
+    address: "",
   });
+  const [province, setProvince] = useState<Province[] | null>(null);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((item) => {
@@ -43,7 +46,7 @@ const RegisterPage = () => {
     setFormData((item) => {
       return {
         ...item,
-        age: event.target.value,
+        address: event.target.value,
       };
     });
   };
@@ -83,6 +86,12 @@ const RegisterPage = () => {
     }
   };
 
+  useEffect(() => {
+    fetch("https://provinces.open-api.vn/api/p/")
+      .then((res) => res.json())
+      .then(setProvince)
+      .catch(console.error);
+  }, []);
   return (
     <>
       <Box className="form-wrapper">
@@ -95,6 +104,14 @@ const RegisterPage = () => {
           <Typography variant="h4" align="center" fontWeight={600}>
             Đăng ký
           </Typography>
+
+          <TextField
+            type="text"
+            label="Họ và tên"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+          />
 
           <TextField
             type="text"
@@ -149,18 +166,23 @@ const RegisterPage = () => {
           />
 
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <InputLabel id="demo-simple-select-label">Address</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={formData.age}
-              label="Age"
-              name="age"
+              value={formData.address}
+              label="Address"
+              name="address"
               onChange={handleChangeSelect}
             >
-              <MenuItem value={"10"}>Ten</MenuItem>
-              <MenuItem value={"20"}>Twenty</MenuItem>
-              <MenuItem value={"30"}>Thirty</MenuItem>
+              {province &&
+                province.map((item) => {
+                  return (
+                    <MenuItem key={item.code} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  );
+                })}
             </Select>
           </FormControl>
 

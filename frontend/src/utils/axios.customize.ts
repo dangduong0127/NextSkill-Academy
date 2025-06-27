@@ -24,7 +24,7 @@ instance.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
-let refreshTokenPromise: Promise<void> | null = null;
+let refreshTokenPromise: Promise<AxiosResponse> | null = null;
 
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
@@ -44,7 +44,7 @@ instance.interceptors.response.use(
           .then(() => {
             // console.log("res from refreshtoken api", res);
             // localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
-            // return instance(originalRequest);
+            return instance(originalRequest);
           })
           .catch((_err) => {
             logout()
@@ -64,9 +64,7 @@ instance.interceptors.response.use(
           });
       }
 
-      return refreshTokenPromise.then(() => {
-        return instance(originalRequest);
-      });
+      return refreshTokenPromise;
     }
 
     if (error.response?.status === 401) {

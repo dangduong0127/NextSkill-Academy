@@ -17,6 +17,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 import { Link, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { ImageOpen } from "../../utils/contextApi";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const drawerWidth = 240;
 interface MenuItem {
@@ -26,6 +28,7 @@ interface MenuItem {
 }
 // props { children }: { children: React.ReactNode }
 const DashboardLayout = () => {
+  const { imageUrl, setImageUrl } = React.useContext(ImageOpen)!;
   const location = useLocation();
   const menuItems: MenuItem[] = [
     {
@@ -102,6 +105,18 @@ const DashboardLayout = () => {
         {/* {children} */}
         <Outlet />
       </Box>
+
+      {imageUrl && (
+        <div className="view-image-container">
+          <img
+            src={import.meta.env.VITE_API_URL + "/src/uploads/" + imageUrl}
+          />
+          <CancelIcon
+            className="close-image"
+            onClick={() => setImageUrl(null)}
+          />
+        </div>
+      )}
     </Box>
   );
 };

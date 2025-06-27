@@ -36,11 +36,11 @@ const handleCreateUser = async (data: IUser) => {
     const hashedPassword = await bcrypt.hash(data.password, saltRounds);
 
     const user = await UserModel.create({
-      name: data.name ?? "",
+      fullName: data.fullName ?? "",
       email: data.email,
       password: hashedPassword,
       role: "681f6d5fa266955d8682a70f",
-      age: data.age ?? "",
+      address: data.address ?? "",
       avatar: data.avatar ?? "",
       phone: data.phone ?? "",
     });
@@ -94,7 +94,7 @@ const handleLogin = async (data: IUser) => {
           process.env.JWT_ACCESS_TOKEN_SECRET!,
           {
             algorithm: "HS256",
-            expiresIn: "1h",
+            expiresIn: ms("1h"),
           }
         );
 
@@ -103,7 +103,7 @@ const handleLogin = async (data: IUser) => {
           process.env.JWT_REFRESH_TOKEN_SECRET!,
           {
             algorithm: "HS256",
-            expiresIn: "1d",
+            expiresIn: ms("1d"),
           }
         );
 
@@ -154,7 +154,7 @@ const handleRefreshToken = async (refreshToken: string) => {
           role: refreshTokenDecoded.role,
         },
         process.env.JWT_ACCESS_TOKEN_SECRET,
-        { algorithm: "HS256", expiresIn: "1d" }
+        { algorithm: "HS256", expiresIn: ms("1d") }
       );
 
       return {

@@ -1,0 +1,25 @@
+.view-image-container {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+  z-index: 999999999999999999999999;
+  background-color: #000000c7;
+  img {
+    position: relative;
+    height: 90%;
+    border-radius: 10px;
+  }
+  .close-image {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+  }
+}

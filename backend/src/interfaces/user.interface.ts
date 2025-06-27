@@ -1,11 +1,10 @@
 import mongoose, { Document } from "mongoose";
 
 interface IUser extends Document {
-  name: string;
+  fullName: string;
   email: string;
   password: string;
   role: mongoose.Types.ObjectId;
-  age: number;
   avatar: string;
   phone: number;
   address: string;

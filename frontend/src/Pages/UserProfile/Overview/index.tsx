@@ -27,7 +27,7 @@ const Overview = ({ data }: IOverviewProps) => {
               sx={{ width: "100px", height: "100px" }}
             />
             <div>
-              <h3>{data?.name ?? "No name"}</h3>
+              <h3>{data?.fullName ?? "No name"}</h3>
               <p>Email: {data?.email}</p>
             </div>
           </div>
@@ -54,7 +54,7 @@ const Overview = ({ data }: IOverviewProps) => {
                 id="fullName"
                 variant="outlined"
                 placeholder="Your full name"
-                value={data?.name ?? ""}
+                value={data?.fullName ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
               />
@@ -118,7 +118,7 @@ const Overview = ({ data }: IOverviewProps) => {
                 id=""
                 variant="outlined"
                 placeholder="Your full name"
-                value={data?.name ?? ""}
+                value={data?.fullName ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
               />
@@ -130,7 +130,7 @@ const Overview = ({ data }: IOverviewProps) => {
                 id=""
                 variant="outlined"
                 placeholder="Your full name"
-                value={data?.name ?? ""}
+                value={data?.fullName ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
               />
@@ -142,7 +142,7 @@ const Overview = ({ data }: IOverviewProps) => {
                 id=""
                 variant="outlined"
                 placeholder="Your full name"
-                value={data?.name ?? ""}
+                value={data?.fullName ?? ""}
                 onChange={(e) => console.log(e.target.value)}
                 className="custom-textfield"
               />

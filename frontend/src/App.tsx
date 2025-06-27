@@ -23,10 +23,11 @@ import UserProfile from "./Pages/UserProfile";
 import { NotifierProvider } from "./components/Notifier/messageContext";
 import DashboardLayout from "./Pages/DashBoard";
 import Chat from "./Pages/DashBoard/Chat";
-// import getSocket from "./lib/socket";
+import { ImageOpen } from "./utils/contextApi";
+
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
-
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const theme = useMemo(
     () =>
       createTheme({
@@ -51,7 +52,7 @@ function App() {
 
   const ProtectedRoute = () => {
     const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    if (!user && user?.role !== "admin")
+    if (!user || user?.role !== "admin")
       return <Navigate to="/login" replace={true} />;
     return <Outlet />;
   };
@@ -68,106 +69,97 @@ function App() {
     return <Outlet />;
   };
 
-  // useEffect(() => {
-  //   const socket = getSocket();
-  //   socket.on("connect", () => {
-  //     console.log("Connected to socket with id: ", socket.id);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <NotifierProvider>
-          <BrowserRouter>
-            <CssBaseline />
-            <Box
-              sx={{ p: 2 }}
-              style={{
-                position: "fixed",
-                bottom: "20px",
-                right: "20px",
-              }}
-            >
-              <Button
-                style={{ borderRadius: "50%", padding: "20px" }}
-                variant="contained"
-                onClick={toggleTheme}
+    <ImageOpen.Provider value={{ imageUrl, setImageUrl }}>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <NotifierProvider>
+            <BrowserRouter>
+              <CssBaseline />
+              <Box
+                sx={{ p: 2 }}
+                style={{
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
+                }}
               >
-                {mode === "light" ? (
-                  <>
-                    <DarkModeIcon />
-                  </>
-                ) : (
-                  <LightModeIcon />
-                )}
-              </Button>
-            </Box>
+                <Button
+                  style={{ borderRadius: "50%", padding: "20px" }}
+                  variant="contained"
+                  onClick={toggleTheme}
+                >
+                  {mode === "light" ? (
+                    <>
+                      <DarkModeIcon />
+                    </>
+                  ) : (
+                    <LightModeIcon />
+                  )}
+                </Button>
+              </Box>
 
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Layout>
-                    <HomePage />
-                  </Layout>
-                }
-              />
-              <Route element={<AuthorizedRoute />}>
+              <Routes>
                 <Route
-                  path="/login"
+                  path="/"
                   element={
                     <Layout>
-                      <LoginPage />
+                      <HomePage />
                     </Layout>
                   }
                 />
-              </Route>
-
-              <Route
-                path="/register"
-                element={
-                  <Layout>
-                    <RegisterPage />
-                  </Layout>
-                }
-              ></Route>
-
-              <Route element={<ProtectedRouteAuth />}>
-                <Route
-                  path="/user/profile"
-                  element={
-                    <Layout>
-                      <UserProfile />
-                    </Layout>
-                  }
-                />
-              </Route>
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<DashboardLayout />}>
-                  <Route index element={<div>Dashboard Home</div>} />
-                  <Route path="chat" element={<Chat />} />
-                  <Route path="settings" element={<div>Settings</div>} />
+                <Route element={<AuthorizedRoute />}>
+                  <Route
+                    path="/login"
+                    element={
+                      <Layout>
+                        <LoginPage />
+                      </Layout>
+                    }
+                  />
                 </Route>
-              </Route>
 
-              <Route
-                path="/*"
-                element={
-                  <Layout>
-                    <ErrorPage />
-                  </Layout>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        </NotifierProvider>
-      </Provider>
-    </ThemeProvider>
+                <Route
+                  path="/register"
+                  element={
+                    <Layout>
+                      <RegisterPage />
+                    </Layout>
+                  }
+                ></Route>
+
+                <Route element={<ProtectedRouteAuth />}>
+                  <Route
+                    path="/user/profile"
+                    element={
+                      <Layout>
+                        <UserProfile />
+                      </Layout>
+                    }
+                  />
+                </Route>
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<DashboardLayout />}>
+                    <Route index element={<div>Dashboard Home</div>} />
+                    <Route path="chat" element={<Chat />} />
+                    <Route path="settings" element={<div>Settings</div>} />
+                  </Route>
+                </Route>
+
+                <Route
+                  path="/*"
+                  element={
+                    <Layout>
+                      <ErrorPage />
+                    </Layout>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </NotifierProvider>
+        </Provider>
+      </ThemeProvider>
+    </ImageOpen.Provider>
   );
 }
 

@@ -13,6 +13,6 @@ router.get("/getAllUsers", authMiddleware, getAllUsers);
 router.delete("/deleteUser/:userId", authMiddleware, deleteUserController);
 router.put("/updateUser/:userId", authMiddleware, updateUserController);
 router.get("/getMessage", authMiddleware, getMessageController);
-router.post("/upload", uploadController);
+router.post("/upload", authMiddleware, uploadController);
 
 export default router;

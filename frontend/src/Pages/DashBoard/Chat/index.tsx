@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   Box,
   List,
@@ -21,6 +21,7 @@ import data from "@emoji-mart/data";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CancelIcon from "@mui/icons-material/Cancel";
 import "./styles.scss";
+import { ImageOpen } from "../../../utils/contextApi";
 
 let socket: Socket;
 
@@ -35,14 +36,13 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { setImageUrl } = useContext(ImageOpen)!;
 
   const handleEmojiSelect = (emoji: EmojiObject) => {
     setMessage((prev) => prev + emoji.native);
   };
 
   const handleSendMessage = async () => {
-    // fetchMessages();
-
     let uploadedImgFileName: string | null = null;
 
     const file = fileInputRef.current?.files?.[0];
@@ -70,6 +70,7 @@ const Chat = () => {
       });
 
       setMessage("");
+      setShowEmojiPicker(false);
       handleRemovePreview();
     }
   };
@@ -169,7 +170,7 @@ const Chat = () => {
                       user.avatar || ""
                   }
                 />
-                <ListItemText primary={user.name} />
+                <ListItemText primary={user.fullName} />
               </ListItem>
             ))}{" "}
         </List>
@@ -184,10 +185,16 @@ const Chat = () => {
         sx={{ backgroundColor: "#e7e7e7" }}
       >
         <Typography variant="h6" gutterBottom>
-          Chat with {users.find((u) => u._id === selectedUserId)?.name}
+          Chat with {users.find((u) => u._id === selectedUserId)?.fullName}
         </Typography>
         <Divider />
-        <Box flex={1} overflow="auto" my={2} sx={{ position: "relative" }}>
+        <Box
+          flex={1}
+          overflow="auto"
+          my={2}
+          sx={{ position: "relative" }}
+          className="chatinner"
+        >
           {(chatList || []).map((msg, index) => (
             <Box
               key={index}
@@ -212,6 +219,7 @@ const Chat = () => {
                         "/src/uploads/" +
                         msg.fileUrl
                       }
+                      onClick={() => setImageUrl(msg.fileUrl)}
                     />
                   )}
                 </Typography>

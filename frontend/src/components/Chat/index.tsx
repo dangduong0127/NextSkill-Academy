@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { io, Socket } from "socket.io-client";
 import type { Message } from "../../utils/types";
 import "./styles.scss";
-import { Avatar } from "@mui/material";
+import { Avatar, Button, Typography } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import { getMessage, uploadImage } from "../../utils/axios";
@@ -11,6 +11,10 @@ import data from "@emoji-mart/data";
 import type { EmojiObject } from "../../utils/types";
 import { IconButton } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { ImageOpen } from "../../utils/contextApi";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../app/store";
+import { Link } from "react-router-dom";
 
 type ChatProps = {
   eventOpenChat: () => void;
@@ -27,14 +31,14 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
   const endOfMessageRef = useRef<HTMLDivElement | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { setImageUrl } = useContext(ImageOpen)!;
+  const auth = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     setUserId(userInfo.id);
   }, [userInfo.id]);
 
   const sendMessage = async () => {
-    fetchMessages();
-
     let uploadedImgFileName: string | null = null;
 
     const file = fileInputRef.current?.files?.[0];
@@ -52,6 +56,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
     }
 
     if (message.trim() !== "" || uploadedImgFileName) {
+      fetchMessages();
       socket.emit("send_message", {
         room: userId,
         sender: userId,
@@ -61,6 +66,7 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
         createdAt: Date.now(),
       });
       setMessage("");
+      setShowEmojiPicker(false);
       handleRemovePreview();
     }
   };
@@ -139,42 +145,62 @@ const Chat = ({ eventOpenChat }: ChatProps) => {
           }}
         />
       </div>
-
-      <div className="chat-messages">
-        <div className="message received">
-          <div className="message-bubble">
-            Xin chào! Tôi có thể giúp gì cho bạn? 😊
-          </div>
-          <div className="message-time">{now}</div>
-        </div>
-
-        {chatList.map((item, index) => {
-          const isSentByCurrentUser = item.sender === userId;
-          return (
-            <div
-              key={index}
-              className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
-            >
-              <div className="message-bubble">
-                {item.content}{" "}
-                {item?.fileUrl && (
-                  <img
-                    src={
-                      import.meta.env.VITE_API_URL +
-                      "/src/uploads/" +
-                      item.fileUrl
-                    }
-                  />
-                )}
-              </div>
-              <div className="message-time">
-                {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
-              </div>
+      {auth.isAuthenticated === true ? (
+        <div className="chat-messages">
+          <div className="message received">
+            <div className="message-bubble">
+              Xin chào! Tôi có thể giúp gì cho bạn? 😊
             </div>
-          );
-        })}
-        <div ref={endOfMessageRef} />
-      </div>
+            <div className="message-time">{now}</div>
+          </div>
+
+          {chatList.map((item, index) => {
+            const isSentByCurrentUser = item.sender === userId;
+            return (
+              <div
+                key={index}
+                className={`message ${isSentByCurrentUser ? "sent" : "received"}`}
+              >
+                <div className="message-bubble">
+                  {item.content}{" "}
+                  {item?.fileUrl && (
+                    <img
+                      src={
+                        import.meta.env.VITE_API_URL +
+                        "/src/uploads/" +
+                        item.fileUrl
+                      }
+                      onClick={() => setImageUrl(item.fileUrl)}
+                    />
+                  )}
+                </div>
+                <div className="message-time">
+                  {dayjs(item.createdAt).format("HH:mm DD/MM/YYYY")}
+                </div>
+              </div>
+            );
+          })}
+          <div ref={endOfMessageRef} />
+        </div>
+      ) : (
+        <div
+          className="chat-messages"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <Typography component={"p"}>
+            Đăng nhập hoặc đăng ký để bắt đầu chat ngay
+          </Typography>
+          <Button component={Link} to="/login" variant="contained">
+            Đăng nhập
+          </Button>
+        </div>
+      )}
 
       <div className="typing-indicator">
         <span className="typing-dots">Đang nhập...</span>

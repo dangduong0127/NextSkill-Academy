@@ -1,19 +1,20 @@
 // import { Typography, Container, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import type { AppDispatch } from "../../app/store";
 import { fetchAllUsers } from "../../features/users/userSlice";
 import { checkAuthThunk } from "../../features/auth/authSlice";
-// import type { IUser } from "../../utils/types";
 import "./styles.scss";
 import HeroSection from "./Hero";
 import Statistics from "./Statistics";
 import OurFeatures from "./OurFeatures";
+import { ImageOpen } from "../../utils/contextApi";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // const { loading, error } = useSelector((state: RootState) => state.users);
 
+  // const { loading, error } = useSelector((state: RootState) => state.users);
   useEffect(() => {
     dispatch(fetchAllUsers());
     dispatch(checkAuthThunk());
@@ -21,8 +22,12 @@ const HomePage = () => {
 
   // if (loading) return <div>Loading...</div>;
   // if (error) return <p>Error occurred</p>;
+  const context = useContext(ImageOpen);
+  if (!context) return null;
+  const { imageUrl, setImageUrl } = context;
   return (
     <>
+      {console.log(imageUrl)}
       {/* <Container>
         <Typography variant="h1" component="h1">
           Trang chủ
@@ -54,12 +59,23 @@ const HomePage = () => {
           Update User
         </Button>
       </Container> */}
+      {imageUrl && (
+        <div className="view-image-container">
+          <img
+            src={import.meta.env.VITE_API_URL + "/src/uploads/" + imageUrl}
+          />
+          <CancelIcon
+            className="close-image"
+            onClick={() => setImageUrl(null)}
+          />
+        </div>
+      )}
       <HeroSection />
       <Statistics />
       <OurFeatures />
       <section style={{ display: "flex", justifyContent: "center" }}>
         <div className="container">
-          <video autoPlay loop style={{ width: "100%" }}>
+          <video autoPlay loop style={{ width: "100%", borderRadius: "10px" }}>
             <source
               src={`${import.meta.env.VITE_API_URL}/src/uploads/Purple Orange Modern Online Course Video.mp4`}
               type="video/mp4"
