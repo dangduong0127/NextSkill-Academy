@@ -10,3 +10,27 @@ body {
 .container {
   max-width: 1280px;
 }
+
+.btn-darkmode {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .btn-darkmode {
+    top: 0;
+    // right: 100px;
+    z-index: 99999999;
+    button {
+      padding: 10px !important;
+      background-color: #fff;
+      color: #000;
+      box-shadow: none;
+    }
+  }
+}

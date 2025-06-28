@@ -76,14 +76,7 @@ function App() {
           <NotifierProvider>
             <BrowserRouter>
               <CssBaseline />
-              <Box
-                sx={{ p: 2 }}
-                style={{
-                  position: "fixed",
-                  bottom: "20px",
-                  right: "20px",
-                }}
-              >
+              <Box sx={{ p: 2 }} className="btn-darkmode">
                 <Button
                   style={{ borderRadius: "50%", padding: "20px" }}
                   variant="contained"
