@@ -1,5 +1,5 @@
 import "./styles.scss";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 type props = {
   status: boolean;
@@ -23,7 +23,7 @@ const MenuMobile = ({ status }: props) => {
       >
         Member
       </Button>
-      <Menu
+      {/* <Menu
         id="member-menu"
         // anchorEl={anchorEl}
         // open={!!anchorEl}
@@ -61,7 +61,7 @@ const MenuMobile = ({ status }: props) => {
         <MenuItem component={Link} to="/ui-ux-design">
           UI/UX Design
         </MenuItem>
-      </Menu>
+      </Menu> */}
 
       <Button component={Link} to={"/events"} color="inherit">
         Events
