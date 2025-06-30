@@ -2,6 +2,10 @@
   margin: 0 auto;
   margin-top: 100px;
   min-height: 80vh;
+
+  @media screen and (max-width: 768px) {
+    margin-top: 70px;
+  }
 }
 
 .btn-chat {

@@ -20,6 +20,9 @@
   gap: 1;
 }
 @media only screen and (max-width: 768px) {
+  header {
+    max-height: 70px;
+  }
   .branch {
     img {
       width: 50%;
