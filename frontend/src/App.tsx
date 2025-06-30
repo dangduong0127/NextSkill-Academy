@@ -77,7 +77,6 @@ function App() {
           <NotifierProvider>
             <BrowserRouter>
               <CssBaseline />
-<<<<<<< HEAD
               {imageUrl && (
                 <div className="view-image-container">
                   <img
@@ -99,9 +98,6 @@ function App() {
                   right: "20px",
                 }}
               >
-=======
-              <Box sx={{ p: 2 }} className="btn-darkmode">
->>>>>>> refs/remotes/origin/main
                 <Button
                   style={{ borderRadius: "50%", padding: "20px" }}
                   variant="contained"

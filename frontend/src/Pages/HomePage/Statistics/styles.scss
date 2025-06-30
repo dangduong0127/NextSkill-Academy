@@ -24,3 +24,8 @@ section.statistics-section {
     }
   }
 }
+@media only screen and (max-width: 768px) {
+  .statistics-inner {
+    flex-direction: column;
+  }
+}

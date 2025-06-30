@@ -8,6 +8,8 @@ import "./styles.scss";
 import HeroSection from "./Hero";
 import Statistics from "./Statistics";
 import OurFeatures from "./OurFeatures";
+import AboutSection from "./About";
+import TestimonialsSection from "./Testimonials";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -68,6 +70,8 @@ const HomePage = () => {
       <HeroSection />
       <Statistics />
       <OurFeatures />
+      <AboutSection />
+      <TestimonialsSection />
       <section style={{ display: "flex", justifyContent: "center" }}>
         <div className="container">
           <video autoPlay loop style={{ width: "100%", borderRadius: "10px" }}>

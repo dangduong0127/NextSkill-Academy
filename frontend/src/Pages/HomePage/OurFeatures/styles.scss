@@ -4,6 +4,7 @@ section.OurFeatures-section {
   flex-wrap: wrap;
   justify-content: center;
   background-color: rgb(249, 250, 251);
+  padding: 16px;
 
   .heading {
     text-align: center;
@@ -103,13 +104,11 @@ section.OurFeatures-section {
       width: 100%;
     }
   }
-}
 
-@media only screen and (max-width: 768px) {
-  .courses-featured-container {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
+  @media only screen and (max-width: 768px) {
+    .courses-featured-container {
+      grid-template-columns: repeat(1, 1fr);
+      gap: 20px;
+    }
   }
-}
-@media only screen and (max-width: 768px) {
 }
