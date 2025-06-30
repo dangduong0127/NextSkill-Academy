@@ -15,6 +15,8 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "../../../app/store";
 import { logoutThunk } from "../../../features/auth/authSlice";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuMobile from "./MenuMobile";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -22,6 +24,7 @@ const Header = () => {
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const auth = useSelector((state: RootState) => state.auth);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -39,6 +42,10 @@ const Header = () => {
     setAnchorActions(null);
   };
 
+  const handleOpenMenu = () => {
+    setOpenMenu(!openMenu);
+  };
+
   return (
     <>
       <AppBar position="fixed" color="inherit">
@@ -51,22 +58,14 @@ const Header = () => {
             }}
           >
             {/* Logo */}
-            <Box component={Link} to={"/"} sx={{ width: "100px" }}>
+            <Box component={Link} to={"/"} className="branch">
               <img
-                style={{
-                  width: "100%",
-                  height: "80px",
-                  objectFit: "contain",
-                }}
                 src={`${import.meta.env.VITE_API_URL}/src/uploads/academy-logo-element-vector-illustration-decorative-design-191487693.jpg`}
                 alt="Logo"
               />
             </Box>
             {/* Menu Navigation */}
-            <Box
-              sx={{ display: "flex", gap: "10px" }}
-              onMouseLeave={handleClose}
-            >
+            <Box onMouseLeave={handleClose} className="nav-desktop">
               <Button component={Link} to={"/"} color="inherit">
                 Home
               </Button>
@@ -148,65 +147,73 @@ const Header = () => {
             </Box>
 
             {/* User Actions */}
-            {auth.isAuthenticated === false ? (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  sx={{ borderRadius: "30px", textTransform: "capitalize" }}
-                >
-                  Enroll now
-                </Button>
-                <IconButton
-                  color="inherit"
-                  onClick={handleOpenActions}
-                  aria-controls={anchorActions ? "user-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={anchorActions ? "true" : undefined}
-                >
-                  <Avatar alt="User" src={"/avatar.png"} />
-                </IconButton>
 
-                <Menu
-                  id="user-menu"
-                  anchorEl={anchorActions}
-                  open={!!anchorActions}
-                  onClose={handleCloseActions}
-                  disableScrollLock={true}
-                >
-                  <MenuItem
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 1,
-                      padding: "8px 16px",
-                    }}
+            <div className="bars">
+              <MenuIcon color="primary" onClick={handleOpenMenu}></MenuIcon>
+              <MenuMobile status={openMenu} />
+            </div>
+
+            {auth.isAuthenticated === false ? (
+              <>
+                <Box className="Actions">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{ borderRadius: "30px", textTransform: "capitalize" }}
                   >
-                    <Button
-                      component={Link}
-                      to="/login"
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={handleCloseActions}
+                    Enroll now
+                  </Button>
+                  <IconButton
+                    color="inherit"
+                    onClick={handleOpenActions}
+                    aria-controls={anchorActions ? "user-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={anchorActions ? "true" : undefined}
+                  >
+                    <Avatar alt="User" src={"/avatar.png"} />
+                  </IconButton>
+
+                  <Menu
+                    id="user-menu"
+                    anchorEl={anchorActions}
+                    open={!!anchorActions}
+                    onClose={handleCloseActions}
+                    disableScrollLock={true}
+                  >
+                    <MenuItem
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        padding: "8px 16px",
+                      }}
                     >
-                      Login
-                    </Button>
-                    <Button
-                      component={Link}
-                      to="/register"
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                      onClick={handleCloseActions}
-                    >
-                      Register
-                    </Button>
-                  </MenuItem>
-                </Menu>
-              </Box>
+                      <Button
+                        component={Link}
+                        to="/login"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={handleCloseActions}
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        component={Link}
+                        to="/register"
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        onClick={handleCloseActions}
+                      >
+                        Register
+                      </Button>
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              </>
             ) : (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box className="Actions">
                 <Button
                   color="primary"
                   variant="contained"
