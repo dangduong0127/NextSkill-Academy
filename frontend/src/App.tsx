@@ -24,6 +24,7 @@ import { NotifierProvider } from "./components/Notifier/messageContext";
 import DashboardLayout from "./Pages/DashBoard";
 import Chat from "./Pages/DashBoard/Chat";
 import { ImageOpen } from "./utils/contextApi";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -76,7 +77,27 @@ function App() {
           <NotifierProvider>
             <BrowserRouter>
               <CssBaseline />
-              <Box sx={{ p: 2 }} className="btn-darkmode">
+              {imageUrl && (
+                <div className="view-image-container">
+                  <img
+                    src={
+                      import.meta.env.VITE_API_URL + "/src/uploads/" + imageUrl
+                    }
+                  />
+                  <CancelIcon
+                    className="close-image"
+                    onClick={() => setImageUrl(null)}
+                  />
+                </div>
+              )}
+              <Box
+                sx={{ p: 2 }}
+                style={{
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
+                }}
+              >
                 <Button
                   style={{ borderRadius: "50%", padding: "20px" }}
                   variant="contained"
