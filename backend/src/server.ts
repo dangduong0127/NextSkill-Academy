@@ -8,12 +8,20 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import initSocket from "./socket";
 import fs from "fs";
+import { rateLimit } from "express-rate-limit";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cookieParser());
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
 
 // Fix Cache from disk from ExpressJS
 app.use((req, res, next) => {
@@ -42,6 +50,7 @@ app.get("/debug-files", (_req, res) => {
   res.json({ files });
 });
 
+app.use(limiter);
 app.use(router);
 
 const server = http.createServer(app);
