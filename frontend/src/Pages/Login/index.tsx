@@ -35,15 +35,21 @@ const LoginPage = () => {
     event.preventDefault();
     validate();
     if (validate()) {
-      const res = await login(formData);
-      const result = res.data;
-      if (result.status === 200) {
-        notify("success", "Login successfully");
-        localStorage.setItem("userInfo", JSON.stringify(result?.userInfo));
+      try {
+        const res = await login(formData);
+        const result = res.data;
         console.log(result);
-        navigate("/");
-      } else {
-        notify("error", result.message);
+        if (result.status === 200) {
+          notify("success", "Login successfully");
+          localStorage.setItem("userInfo", JSON.stringify(result?.userInfo));
+          console.log(result);
+          navigate("/");
+        } else {
+          notify("error", result.message);
+        }
+      } catch (err) {
+        const error = err.response.data;
+        notify("error", error.message);
       }
     }
   };
