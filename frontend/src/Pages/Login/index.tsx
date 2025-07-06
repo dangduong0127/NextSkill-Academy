@@ -5,6 +5,7 @@ import "../Register/styles.scss";
 import type { IformLogin } from "../../utils/types";
 import { login } from "../../utils/axios";
 import { useNotifier } from "../../components/Notifier/messageContext";
+import axios from "axios";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -47,9 +48,13 @@ const LoginPage = () => {
         } else {
           notify("error", result.message);
         }
-      } catch (err) {
-        const error = err.response.data;
-        notify("error", error.message);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err) && err.response) {
+          const error = err.response.data;
+          notify("error", error.message);
+        } else {
+          notify("error", "An unexpected error occurred");
+        }
       }
     }
   };
