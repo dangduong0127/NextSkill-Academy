@@ -8,15 +8,15 @@
 }
 
 .nav-desktop {
-  display: "flex";
-  gap: "10px";
+  display: flex;
+  gap: 10px;
 }
 .bars {
   display: none !important;
 }
 .Actions {
-  display: "flex";
-  align-items: "center";
+  display: flex;
+  align-items: center;
   gap: 1;
 }
 @media only screen and (max-width: 768px) {

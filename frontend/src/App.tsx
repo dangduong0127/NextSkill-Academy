@@ -25,6 +25,7 @@ import DashboardLayout from "./Pages/DashBoard";
 import Chat from "./Pages/DashBoard/Chat";
 import { ImageOpen } from "./utils/contextApi";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CoursePage from "./Pages/Courses";
 
 function App() {
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -122,6 +123,16 @@ function App() {
                     </Layout>
                   }
                 />
+
+                <Route
+                  path="/courses"
+                  element={
+                    <Layout>
+                      <CoursePage />
+                    </Layout>
+                  }
+                />
+
                 <Route element={<AuthorizedRoute />}>
                   <Route
                     path="/login"

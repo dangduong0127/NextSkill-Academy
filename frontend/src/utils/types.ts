@@ -56,3 +56,8 @@ export type Province = {
   path_with_type: string;
   code_name: string;
 };
+
+export type Pagination = {
+  page: string | number;
+  limit: string | number;
+};

@@ -1,5 +1,5 @@
 import axios from "./axios.customize";
-import type { IformRegister, IformLogin, IUser } from "./types";
+import type { IformRegister, IformLogin, IUser, Pagination } from "./types";
 
 const getAllUsers = () => {
   const API_URL = "/getAllUsers";
@@ -56,6 +56,16 @@ const uploadImage = (formData: FormData) => {
   return axios.post(API_URL, formData);
 };
 
+const coursePages = (req: Pagination) => {
+  const API_URL = `/courses`;
+  return axios.get(API_URL, {
+    params: {
+      page: req.page,
+      limit: req.limit,
+    },
+  });
+};
+
 export {
   getAllUsers,
   register,
@@ -68,4 +78,5 @@ export {
   getMessage,
   getUserMessage,
   uploadImage,
+  coursePages,
 };
