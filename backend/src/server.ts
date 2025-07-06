@@ -9,10 +9,7 @@ import http from "http";
 import initSocket from "./socket";
 import fs from "fs";
 import { rateLimit } from "express-rate-limit";
-<<<<<<< HEAD
 import ms from "ms";
-=======
->>>>>>> 4a3c86ca644f596ee24679c631e4308c83149f24
 
 dotenv.config();
 const app = express();
@@ -21,11 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 const limiter = rateLimit({
-<<<<<<< HEAD
   windowMs: ms("15 minutes"),
-=======
-  windowMs: 15 * 60 * 1000,
->>>>>>> 4a3c86ca644f596ee24679c631e4308c83149f24
   limit: 100,
   standardHeaders: "draft-8",
   legacyHeaders: false,
